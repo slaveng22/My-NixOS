@@ -1,0 +1,11 @@
+- [ ] Google drives not accessable
+- [ ] Wallpapers
+- [ ] Auto-unlock encrypted disk
+- [ ] Fingerptint sudo with open-fprintd
+- [ ] nvim config
+- [ ] Obsidian
+- [ ] replace superfile with yazi
+- [ ] gtk theme and icon theme
+- [ ] extensions
+- [ ] paperwm
+- [ ] check nixos config for imprivements

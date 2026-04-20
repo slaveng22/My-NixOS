@@ -126,9 +126,12 @@
   ],
   "logo": {
     "type": "auto" ,
-    "source": "debian",
-//   "type": "file",
-//    "source": "/home/slaven/.config/fastfetch/RPandaASCII.txt",
-//    "color": { "1": "red" },
+    "source": "nixos",
+    // "type": "file",
+    // "source": "/home/slaven/.config/fastfetch/RPandaASCII.txt",
+    "color": { 
+        "1": "red",
+        "2": "white" 
+    },
   },
 }

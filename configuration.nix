@@ -100,6 +100,15 @@
   ripgrep
   wl-clipboard
   neovim
+  trash-cli
+  bat
+  nmap
+  transmission_4-gtk
+  tlp
+  superfile
+  signal-desktop
+  tealdeer
+  fastfetch
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
