@@ -1,0 +1,79 @@
+{
+    "height": 30,
+    "spacing": 10,
+
+    "modules-left": ["sway/workspaces"],
+    "modules-center": ["clock"],
+    "modules-right": ["tray", "custom/wlsunset", "network", "pulseaudio", "temperature", "battery"],
+
+    "sway/workspaces": {
+        "disable-scroll": true,
+        "all-outputs": true,
+        "format": "{name}"
+    },
+
+    "clock": {
+        "format": "{:%H:%M}",
+        "format-alt": "{:%d-%b-%Y}",
+        "tooltip-format": "<tt><big>{calendar}</big></tt>"
+    },
+
+    "tray": {
+        "spacing": 8
+    },
+
+    "custom/wlsunset": {
+        "exec": "if pgrep wlsunset > /dev/null; then echo ''; else echo ''; fi",
+        "on-click": "if pgrep wlsunset > /dev/null; then systemctl --user stop wlsunset; else systemctl --user start wlsunset; fi",
+        "interval": 5,
+        "tooltip-format": "nightlight" 
+    },
+
+    "pulseaudio": {
+        "scroll-step": 5,
+        "format": "{volume}% {icon} {format_source}",
+        "format-bluetooth": "{volume}% {icon}  {format_source}",
+        "format-bluetooth-muted": "{icon}  {format_source}",
+        "format-muted": "󰝟 {format_source}",
+        "format-source": "",
+        "format-source-muted": "",
+        "format-icons": {
+            "headphone": "",
+            "hands-free": "",
+            "headset": "",
+            "phone": "",
+            "portable": "",
+            "car": "",
+            "default": ["", "", ""]
+        },
+        "on-click": "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
+    },
+
+    "network": {
+        "format-wifi": " ",
+        "format-ethernet": "󰈀 ",
+        "tooltip-format": "{essid}",
+        "format-linked": "{ifname} (No IP) 󰈂 ",
+        "format-disconnected": "Disconnected ⚠ ",
+        "format-alt": "{ifname}: {ipaddr}"
+    },
+
+    "temperature": {
+        "format": "{temperatureC}°C {icon}",
+        "format-icons": ["", "", ""],
+        "critical-threshold": 80
+    },
+
+    "battery": {
+        "states": {
+            "good": 80,
+            "warning": 50,
+            "critical": 15
+        },
+        "format": "{capacity}% {icon}",
+        "format-charging": "{capacity}% 󰂄",
+        "format-plugged": "{capacity}% 󰂃",
+        "format-alt": "{time} {icon}",
+        "format-icons": ["󰁺", "󰁼", "󰁾", "󰂁", "󰁹"]
+    }
+}

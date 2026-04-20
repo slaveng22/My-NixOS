@@ -1,0 +1,19 @@
+[user]
+    name = slaveng22
+    email = 117160808+slaveng22@users.noreply.github.com
+    signingkey = $HOME/.ssh/id_ed25519
+
+[push]
+    default = current
+
+[pull]
+    rebase = true
+
+[tag]
+    forceSignAnnotated = true
+
+[init]
+    defaultBranch = main
+
+[merge]
+	tool = nvimdiff

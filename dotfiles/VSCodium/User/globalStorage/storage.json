@@ -1,0 +1,83 @@
+{
+    "telemetry.sqmId": "",
+    "telemetry.machineId": "17eced908b3c0af74cec8d44fd3a42cbd30ebf22eaf5ef58da746bd1196f735a",
+    "telemetry.devDeviceId": "2cd4ece1-44ce-4925-a795-d06b774b0f44",
+    "backupWorkspaces": {
+        "workspaces": [],
+        "folders": [
+            {
+                "folderUri": "file:///home/slaven/Documents/My-Code/My-NixOS"
+            }
+        ],
+        "emptyWindows": [
+            {
+                "backupFolder": "1776697106226"
+            }
+        ]
+    },
+    "windowControlHeight": 43,
+    "profileAssociations": {
+        "workspaces": {
+            "file:///home/slaven/Documents/My-Code/My-NixOS": "__default__profile__"
+        },
+        "emptyWindows": {
+            "1776697106226": "__default__profile__"
+        }
+    },
+    "theme": "vs-dark",
+    "themeBackground": "#1f1f1f",
+    "windowSplash": {
+        "zoomLevel": 2,
+        "baseTheme": "vs-dark",
+        "colorInfo": {
+            "foreground": "#cccccc",
+            "background": "#1f1f1f",
+            "editorBackground": "#1f1f1f",
+            "titleBarBackground": "#181818",
+            "titleBarBorder": "#2b2b2b",
+            "activityBarBackground": "#181818",
+            "activityBarBorder": "#2b2b2b",
+            "sideBarBackground": "#181818",
+            "sideBarBorder": "#2b2b2b",
+            "statusBarBackground": "#181818",
+            "statusBarBorder": "#2b2b2b",
+            "statusBarNoFolderBackground": "#1f1f1f"
+        },
+        "layoutInfo": {
+            "sideBarSide": "left",
+            "editorPartMinWidth": 220,
+            "titleBarHeight": 30,
+            "activityBarWidth": 0,
+            "sideBarWidth": 300,
+            "auxiliaryBarWidth": 0,
+            "statusBarHeight": 22,
+            "windowBorder": false
+        }
+    },
+    "windowsState": {
+        "lastActiveWindow": {
+            "folder": "file:///home/slaven/Documents/My-Code/My-NixOS",
+            "backupPath": "/home/slaven/.config/VSCodium/Backups/f12855ed92ad825918f9c329cc1ee5b5",
+            "uiState": {
+                "mode": 0,
+                "x": 360,
+                "y": 140,
+                "width": 1200,
+                "height": 800
+            }
+        },
+        "openedWindows": []
+    },
+    "windowSplashWorkspaceOverride": {
+        "layoutInfo": {
+            "sideBarWidth": 300,
+            "auxiliaryBarWidth": 300,
+            "workspaces": {
+                "bb98431aaa07c94606f163e7111975c3": {
+                    "sideBarVisible": true,
+                    "auxiliaryBarVisible": false
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,13 @@
+2026-04-20 17:13:27.604 [info] Started local extension host with pid 18846.
+2026-04-20 17:13:28.122 [info] ChatSessionStore: Migrating 0 chat sessions from storage service to file system
+2026-04-20 17:13:29.732 [error] Cannot read properties of undefined (reading 'extensionId'): TypeError: Cannot read properties of undefined (reading 'extensionId')
+    at t (vscode-file://vscode-app/nix/store/wn0sabj5xf80zq4jvhwizdss31kdg1ra-vscodium-1.106.27818/lib/vscode/resources/app/out/vs/workbench/workbench.desktop.main.js:4125:2745)
+    at mDt.recommendRemoteExtensionIfNeeded (vscode-file://vscode-app/nix/store/wn0sabj5xf80zq4jvhwizdss31kdg1ra-vscodium-1.106.27818/lib/vscode/resources/app/out/vs/workbench/workbench.desktop.main.js:4125:3497)
+2026-04-20 17:13:31.293 [info] [perf] Render performance baseline is 108ms
+2026-04-20 17:13:35.507 [error] Invalid model for label change, rebuilding
+2026-04-20 17:14:08.623 [info] Started local extension host with pid 19103.
+2026-04-20 17:14:09.149 [info] ChatSessionStore: Migrating 0 chat sessions from storage service to file system
+2026-04-20 17:14:10.088 [error] Cannot read properties of undefined (reading 'extensionId'): TypeError: Cannot read properties of undefined (reading 'extensionId')
+    at t (vscode-file://vscode-app/nix/store/wn0sabj5xf80zq4jvhwizdss31kdg1ra-vscodium-1.106.27818/lib/vscode/resources/app/out/vs/workbench/workbench.desktop.main.js:4125:2745)
+    at mDt.recommendRemoteExtensionIfNeeded (vscode-file://vscode-app/nix/store/wn0sabj5xf80zq4jvhwizdss31kdg1ra-vscodium-1.106.27818/lib/vscode/resources/app/out/vs/workbench/workbench.desktop.main.js:4125:3497)
+2026-04-20 17:14:11.563 [info] [perf] Render performance baseline is 107ms
