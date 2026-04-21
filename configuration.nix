@@ -114,6 +114,14 @@
   mpv
   thunderbird
   onlyoffice-desktopeditors
+  gnome-tweaks
+  gruvbox-gtk-theme
+  gruvbox-plus-icons
+  everforest-gtk-theme
+  papirus-icon-theme
+  bibata-cursors
+  phinger-cursors
+  capitaine-cursors
   ];
 
   # Allow running regular Linux libraries on NixOS

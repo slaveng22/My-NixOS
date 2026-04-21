@@ -4,7 +4,7 @@
     "window.zoomLevel": 2,
     "explorer.compactFolders": false,
     "editor.lineNumbers": "relative",
-    "editor.tabSize": 4,
+    "editor.tabSize": 2,
     "editor.insertSpaces": true,
     "editor.detectIndentation": false,
     "editor.minimap.enabled": false,
