@@ -77,6 +77,7 @@
     # temp run with electron 39, until package is fixed
     (obsidian.override { electron = electron_39; })
     oh-my-posh
+    discord
     ];
   };
 
@@ -112,6 +113,7 @@
   fastfetch
   mpv
   thunderbird
+  onlyoffice-desktopeditors
   ];
 
   # Allow running regular Linux libraries on NixOS
