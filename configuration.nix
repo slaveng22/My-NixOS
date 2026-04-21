@@ -34,8 +34,8 @@
   services.xserver.enable = true;
 
   # Enable the GNOME Desktop Environment.
-  services.xserver.displayManager.gdm.enable = true;
-  services.xserver.desktopManager.gnome.enable = true;
+  services.desktopManager.gnome.enable = true;
+  services.displayManager.gdm.enable = true;
 
   # Configure keymap in X11
   services.xserver.xkb = {
@@ -44,7 +44,7 @@
   };
 
   # Enable CUPS to print documents.
-  services.printing.enable = true;
+  services.printing.enable = false;
 
   # Enable sound with pipewire.
   services.pulseaudio.enable = false;
@@ -74,7 +74,8 @@
     #  thunderbird
     bitwarden-desktop
     vscodium
-    obsidian
+    # temp run with electron 39, untill package is fixed
+    (obsidian.override { electron = electron_39; })
     oh-my-posh
     ];
   };
@@ -83,7 +84,7 @@
     nerd-fonts.jetbrains-mono
   ];
 
-  # Install firefox.
+  # Install Firefox.
   programs.firefox.enable = true;
 
   # Allow unfree packages
@@ -109,6 +110,30 @@
   signal-desktop
   tealdeer
   fastfetch
+  mpv
+  thunderbird
+  ];
+
+  # Allow running regular Linux libraries on NixOS
+  programs.nix-ld.enable = true;
+
+  services.xserver.excludePackages = with pkgs; [
+    xterm
+  ];
+
+  environment.gnome.excludePackages = with pkgs; [
+    epiphany          # web browser
+    gnome-music       # audio player
+    gnome-tour        # welcome tour
+    simple-scan       # document scanner
+    gnome-console     # console/terminal
+    gnome-weather     # weather
+    gnome-maps        # maps
+    showtime          # video player
+    decibels          # audio player
+    gnome-system-monitor  # system monitor
+    gnome-text-editor # text editor
+    geary # email client
   ];
 
   # Some programs need SUID wrappers, can be configured further or are

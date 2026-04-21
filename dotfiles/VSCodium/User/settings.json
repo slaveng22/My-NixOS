@@ -201,4 +201,5 @@
     "window.menuBarVisibility": "compact",
     "window.commandCenter": false,
     "workbench.activityBar.location": "top",
+    "harper.dialect": "American",
 }

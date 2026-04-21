@@ -1,5 +1,5 @@
 - [ ] Google drives not accessable
-- [ ] Wallpapers
+- [x] Wallpapers
 - [ ] Auto-unlock encrypted disk
 - [ ] Fingerptint sudo with open-fprintd
 - [ ] nvim config
@@ -8,4 +8,7 @@
 - [ ] gtk theme and icon theme
 - [ ] extensions
 - [ ] paperwm
-- [ ] check nixos config for imprivements
+- [ ] check nixos config for improvements
+- [x] remve unused packages
+- [x] replace geary with evolution or thunderbird
+- [ ] Move everything to new google account
