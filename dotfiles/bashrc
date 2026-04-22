@@ -77,23 +77,6 @@ cd() {
   builtin cd "$@" && ls --color=auto
 }
 
-spf() {
-  os=$(uname -s)
-
-  if [[ "$os" == "Linux" ]]; then
-    export SPF_LAST_DIR="${XDG_STATE_HOME:-$HOME/.local/state}/superfile/lastdir"
-  elif [[ "$os" == "Darwin" ]]; then
-    export SPF_LAST_DIR="$HOME/Library/Application Support/superfile/lastdir"
-  fi
-
-  command spf "$@"
-
-  [ ! -f "$SPF_LAST_DIR" ] || {
-    . "$SPF_LAST_DIR"
-    rm -f -- "$SPF_LAST_DIR" >/dev/null
-  }
-}
-
 # FZF-powered history search with prompt insert and wl-copy clipboard support
 __fzf_history_search() {
   local selected

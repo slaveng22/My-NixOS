@@ -1,14 +1,16 @@
-- [ ] Google drives not accessable
+- [x] Obsidian
 - [x] Wallpapers
-- [ ] Auto-unlock encrypted disk
-- [ ] Fingerptint sudo with open-fprintd
-- [ ] nvim config
-- [ ] Obsidian
-- [ ] replace superfile with yazi
-- [ ] gtk theme and icon theme
-- [ ] extensions
-- [ ] paperwm
-- [ ] check nixos config for improvements
 - [x] remve unused packages
 - [x] replace geary with evolution or thunderbird
+- [x] gtk theme and icon theme
+- [x] extensions
+- [x] paperwm
+- [ ] check nixos config for improvements
+- [ ] find soluton for tray
+- [ ] Google drives not accessable
+- [ ] Fingerptint sudo with open-fprintd
+- [ ] Auto-unlock encrypted disk
+- [ ] nvim config
+- [ ] replace superfile with yazi
 - [ ] Move everything to new google account
+- [ ] Check why is everything so slow

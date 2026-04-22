@@ -36,6 +36,7 @@
   # Enable the GNOME Desktop Environment.
   services.desktopManager.gnome.enable = true;
   services.displayManager.gdm.enable = true;
+  services.gnome.gnome-browser-connector.enable = true;
 
   # Configure keymap in X11
   services.xserver.xkb = {
@@ -101,7 +102,7 @@
   fzf
   ripgrep
   wl-clipboard
-  neovim
+  neovim-unwrapped
   trash-cli
   bat
   nmap
@@ -114,19 +115,30 @@
   mpv
   thunderbird
   onlyoffice-desktopeditors
+  neovide
+
   gnome-tweaks
   gruvbox-gtk-theme
   gruvbox-plus-icons
   everforest-gtk-theme
-  papirus-icon-theme
   bibata-cursors
-  phinger-cursors
-  capitaine-cursors
+
+  gnomeExtensions.blur-my-shell
+  gnomeExtensions.paperwm
+  gnomeExtensions.auto-move-windows
+  gnomeExtensions.caffeine
+  gnomeExtensions.clipboard-indicator
+  gnomeExtensions.gsconnect
+  gnomeExtensions.media-controls
   ];
 
   # Allow running regular Linux libraries on NixOS
   programs.nix-ld.enable = true;
 
+  # default terminal
+  environment.sessionVariables = {
+    TERMINAL = "alacritty";
+  };
   services.xserver.excludePackages = with pkgs; [
     xterm
   ];
@@ -180,4 +192,10 @@
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
   system.stateVersion = "25.11"; # Did you read the comment?
 
+  hardware.graphics = {
+    enable = true;
+    enable32Bit = true;
+  };
+
+  hardware.enableRedistributableFirmware = true;
 }
