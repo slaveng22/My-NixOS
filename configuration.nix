@@ -30,6 +30,9 @@
   # Select internationalization properties.
   i18n.defaultLocale = "en_US.UTF-8";
 
+  # powerhandle
+  powerManagement.cpuFreqGovernor = "schedutil";
+
   # Enable the X11 windowing system.
   services.xserver.enable = true;
 
@@ -66,13 +69,19 @@
   # Enable touchpad support (enabled default in most desktop Manager).
   # services.xserver.libinput.enable = true;
 
+  # Swap
+  zramSwap = {
+    enable = true;
+    memoryPercent = 50;
+  };
+
+
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.slaven = {
     isNormalUser = true;
     description = "Slaven Gugolj";
     extraGroups = [ "networkmanager" "wheel" ];
     packages = with pkgs; [
-    #  thunderbird
     bitwarden-desktop
     vscodium
     # temp run with electron 39, until package is fixed
@@ -99,23 +108,25 @@
   git
   alacritty
   btop
+  
   fzf
   ripgrep
   wl-clipboard
   neovim-unwrapped
-  trash-cli
+
   bat
+  trash-cli
   nmap
-  transmission_4-gtk
   tlp
-  superfile
-  signal-desktop
   tealdeer
   fastfetch
-  mpv
-  thunderbird
-  onlyoffice-desktopeditors
+
   neovide
+  mpv
+  onlyoffice-desktopeditors
+  transmission_4-gtk
+  thunderbird
+  signal-desktop
 
   gnome-tweaks
   gruvbox-gtk-theme
@@ -130,7 +141,9 @@
   gnomeExtensions.clipboard-indicator
   gnomeExtensions.gsconnect
   gnomeExtensions.media-controls
+  gnomeExtensions.appindicator
   ];
+
 
   # Allow running regular Linux libraries on NixOS
   programs.nix-ld.enable = true;

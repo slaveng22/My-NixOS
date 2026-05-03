@@ -11,3 +11,5 @@ sudo mv /etc/nixos/hardware-configuration.nix /etc/nixos/hardware-configuration.
 sudo ln -s $(pwd)/configuration.nix /etc/nixos/configuration.nix
 sudo ln -s $(pwd)/hardware-configuration.nix /etc/nixos/hardware-configuration.nix
 ``` 
+
+- Bitwarden and Signal desktop tray should be configured in app settings itslef
