@@ -7,11 +7,11 @@
 - [x] paperwm
 - [x] zram swap
 - [x] find soluton for tray
-- [ ] Google drives not accessable
+- [x] Check why is everything so slow - performance mode and zram
 - [ ] Fingerprint sudo with open-fprintd
 - [ ] Auto-unlock encrypted disk
 - [ ] nvim config
 - [ ] replace superfile with yazi
 - [ ] check nixos config for improvements
 - [ ] Move everything to new google account
-- [x] Check why is everything so slow - performance mode and zram
+- [ ] Google drives not accessable - https://discourse.nixos.org/t/gnome-gdrive-broken-in-unstable/68570 (won't work until Gnome fixes it, move to Nextcloud)
