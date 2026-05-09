@@ -4,6 +4,10 @@
 
 { config, pkgs, ... }:
 
+let
+  unstable = import <nixos-unstable> { config = config.nixpkgs.config; };
+in
+
 {
   imports =
     [ # Include the results of the hardware scan.
@@ -84,10 +88,13 @@
     packages = with pkgs; [
     bitwarden-desktop
     vscodium
-    # temp run with electron 39, until package is fixed
-    (obsidian.override { electron = electron_39; })
+    obsidian
     oh-my-posh
     discord
+    lazygit
+    nodejs
+    gcc
+    unzip
     ];
   };
 
@@ -112,7 +119,7 @@
   fzf
   ripgrep
   wl-clipboard
-  neovim-unwrapped
+  unstable.neovim-unwrapped
 
   bat
   trash-cli
@@ -134,7 +141,6 @@
   everforest-gtk-theme
   bibata-cursors
 
-  gnomeExtensions.blur-my-shell
   gnomeExtensions.paperwm
   gnomeExtensions.auto-move-windows
   gnomeExtensions.caffeine
@@ -142,6 +148,9 @@
   gnomeExtensions.gsconnect
   gnomeExtensions.media-controls
   gnomeExtensions.appindicator
+  gnomeExtensions.space-bar
+  gnomeExtensions.logo-menu
+  gnomeExtensions.just-perfection
   ];
 
 
@@ -168,7 +177,6 @@
     decibels          # audio player
     gnome-system-monitor  # system monitor
     gnome-text-editor # text editor
-    geary # email client
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
@@ -188,7 +196,7 @@
   # networking.firewall.allowedTCPPorts = [ ... ];
   # networking.firewall.allowedUDPPorts = [ ... ];
   # Or disable the firewall altogether.
-  # networking.firewall.enable = false;
+  networking.firewall.enable = false;
   
   # Garbage collector
   nix.gc = {

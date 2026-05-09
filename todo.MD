@@ -8,9 +8,11 @@
 - [x] zram swap
 - [x] find soluton for tray
 - [x] Check why is everything so slow - performance mode and zram
+- [x] Restore Geary and use thunderbird untill Geary issue with Outlook is fixed 
+- [ ] nvim config
 - [ ] Fingerprint sudo with open-fprintd
 - [ ] Auto-unlock encrypted disk
-- [ ] nvim config
+- [ ] Configure firewall
 - [ ] replace superfile with yazi
 - [ ] check nixos config for improvements
 - [ ] Move everything to new google account
