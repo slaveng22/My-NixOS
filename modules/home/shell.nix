@@ -21,7 +21,6 @@
       EDITOR = "nvim";
       LESS = "-FRX";
       PROMPT_COMMAND = "history -a; history -c; history -r; $PROMPT_COMMAND";
-      PATH = "$HOME/.local/bin:$PATH";
     };
 
     shellAliases = {
@@ -39,6 +38,8 @@
     };
 
     initExtra = ''
+      export PATH="$HOME/.local/bin:$PATH"
+
       # cd with ls
       cd() { builtin cd "$@" && ls --color=auto; }
 
@@ -57,9 +58,6 @@
 
       # oh-my-posh prompt
       eval "$(oh-my-posh init bash --config ~/.config/oh-my-posh/emodipt.omp.json)"
-
-      # fastfetch on login
-      fastfetch
     '';
   };
 }
