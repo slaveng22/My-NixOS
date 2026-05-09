@@ -56,6 +56,13 @@
       }
       bind -x '"\C-r": __fzf_history_search'
 
+      # Zellij session picker
+      zj() {
+        local session
+        session=$(zellij list-sessions -ns | fzf --prompt="Pick session: " --height=40%)
+        [ -n "$session" ] && zellij attach "$session"
+      }
+
       # oh-my-posh prompt
       eval "$(oh-my-posh init bash --config ~/.config/oh-my-posh/emodipt.omp.json)"
     '';
