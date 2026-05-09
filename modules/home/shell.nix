@@ -21,6 +21,7 @@
       EDITOR = "nvim";
       LESS = "-FRX";
       PROMPT_COMMAND = "history -a; history -c; history -r; $PROMPT_COMMAND";
+      PATH = "$HOME/.local/bin:$PATH";
     };
 
     shellAliases = {
