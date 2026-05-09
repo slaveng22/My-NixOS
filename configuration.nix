@@ -2,11 +2,7 @@
 # your system. Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, pkgs, ... }:
-
-let
-  unstable = import <nixos-unstable> { config = config.nixpkgs.config; };
-in
+{ config, pkgs, unstable, ... }:
 
 {
   imports =
@@ -198,6 +194,9 @@ in
   # Or disable the firewall altogether.
   networking.firewall.enable = false;
   
+  # Flakes
+  nix.settings.experimental-features = [ "nix-command" "flakes" ];
+
   # Garbage collector
   nix.gc = {
     automatic = true;
