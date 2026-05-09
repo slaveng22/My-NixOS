@@ -81,17 +81,6 @@
     isNormalUser = true;
     description = "Slaven Gugolj";
     extraGroups = [ "networkmanager" "wheel" ];
-    packages = with pkgs; [
-    bitwarden-desktop
-    vscodium
-    obsidian
-    oh-my-posh
-    discord
-    lazygit
-    nodejs
-    gcc
-    unzip
-    ];
   };
 
   fonts.packages = with pkgs; [

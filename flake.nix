@@ -17,7 +17,16 @@
         unstable = nixpkgs-unstable.legacyPackages.x86_64-linux;
       };
       modules = [
-        ./configuration.nix
+        ./hosts/redpanda/default.nix
+        home-manager.nixosModules.home-manager
+        {
+          home-manager.useGlobalPkgs = true;
+          home-manager.useUserPackages = true;
+          home-manager.extraSpecialArgs = {
+            unstable = nixpkgs-unstable.legacyPackages.x86_64-linux;
+          };
+          home-manager.users.slaven = import ./modules/home/default.nix;
+        }
       ];
     };
   };
