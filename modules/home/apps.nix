@@ -18,7 +18,7 @@
 
   home.packages = with pkgs; [
     bitwarden-desktop
-    vscodium
+    zellij
     obsidian
     oh-my-posh
     discord
