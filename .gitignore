@@ -1,5 +1,0 @@
-*.log
-dotfiles/VSCodium/**
-!dotfiles/VSCodium/**/
-!dotfiles/VSCodium/User/settings.json
-!dotfiles/VSCodium/User/keybindings.json

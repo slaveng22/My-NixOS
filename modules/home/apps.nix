@@ -18,13 +18,11 @@
 
   home.packages = with pkgs; [
     bitwarden-desktop
-    zellij
     obsidian
     oh-my-posh
     discord
     lazygit
     nodejs
-    gcc
     unzip
   ];
 }

@@ -26,7 +26,7 @@
 
     plugins = with pkgs.vimPlugins; [
       # Colorscheme
-      gruvbox-nvim
+      everforest
       # UI
       lualine-nvim
       bufferline-nvim
@@ -143,8 +143,11 @@
       map("n", "<leader>x", function() smart_write() vim.cmd("bd") end, { desc = "Write and close" })
 
       -- ── Colorscheme ──────────────────────────────────────────────────────
-      require("gruvbox").setup({ contrast = "hard" })
-      vim.cmd.colorscheme("gruvbox")
+      vim.g.everforest_background = "medium"
+      vim.g.neovide_opacity = 0.95
+      vim.cmd.colorscheme("everforest")
+      vim.api.nvim_set_hl(0, "NotifyBackground", { bg = "#2d353b" })
+      require("notify").setup({ background_colour = "#2d353b" })
 
       -- ── Lualine ──────────────────────────────────────────────────────────
       require("lualine").setup({
