@@ -3,7 +3,7 @@
 {
   programs.neovim = {
     enable = true;
-    package = unstable.neovim-unwrapped;
+    package = pkgs.neovim-unwrapped;
     defaultEditor = true;
     viAlias = true;
     vimAlias = true;
@@ -45,7 +45,7 @@
       cmp-nvim-lsp
       luasnip
       # Treesitter
-      (nvim-treesitter.withPlugins (p: with p; [ bash json yaml markdown ]))
+      (nvim-treesitter.withPlugins (p: with p; [ bash json yaml markdown lua ]))
       # Formatting/linting
       none-ls-nvim
       # Git
@@ -73,6 +73,7 @@
       opt.softtabstop = 2
       opt.expandtab = true
       opt.termguicolors = true
+      vim.opt.more = false
 
       vim.g.neovide_cursor_animation_length = 0
       vim.g.neovide_cursor_trail_length = 0
@@ -190,10 +191,7 @@
         },
         presets = { long_message_to_split = true, lsp_doc_border = true },
       })
-      local ok, notify = pcall(require, "notify")
-      if ok then vim.notify = notify end
-
-      -- ── Dashboard ────────────────────────────────────────────────────────
+-- ── Dashboard ────────────────────────────────────────────────────────
       local alpha = require("alpha")
       local dashboard = require("alpha.themes.dashboard")
       dashboard.section.header.val = {
@@ -213,7 +211,7 @@
         dashboard.button("q", "󰩈  Quit",        ":qa<CR>"),
       }
       require("project").setup({
-        use_lsp = false,
+        lsp = { enabled = false },
         patterns = { ".git" },
         show_hidden = false,
         silent_chdir = true,
