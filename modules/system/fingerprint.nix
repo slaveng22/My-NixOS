@@ -18,7 +18,7 @@ in {
   systemd.services.python3-validity.wantedBy = [ "multi-user.target" ];
 
   security.pam.services = {
-    login.fprintAuth = true;
     sudo.fprintAuth = true;
+    gnome-screensaver.fprintAuth = true;
   };
 }

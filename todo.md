@@ -16,5 +16,6 @@
 - [ ] Auto-unlock encrypted disk │
 - [ ] check nixos config for improvements │
 - [ ] How to do updates
+- [ ] Install kando and learn how to use it
 - [ ] Move everything to new google account │
 - [ ] Google drives not accessable │

@@ -25,6 +25,7 @@
   services.openssh.enable = true;
 
   services.tlp.enable = true;
+  services.power-profiles-daemon.enable = false;
 
   environment.systemPackages = with pkgs; [
     btop
