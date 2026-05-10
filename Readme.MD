@@ -45,3 +45,10 @@ dconf write /org/gnome/shell/extensions/paperwm/show-workspace-indicator false
 ```
 
 Bitwarden and Signal tray icons must be enabled in each app's settings.
+
+## Updates
+
+```bash
+nix flake update          # updates flake.lock
+sudo nixos-rebuild switch --flake .#redpanda
+```
