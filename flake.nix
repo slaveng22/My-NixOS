@@ -14,6 +14,7 @@
     nixosConfigurations.redpanda = nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
       specialArgs = {
+        inherit self;
         unstable = nixpkgs-unstable.legacyPackages.x86_64-linux;
       };
       modules = [

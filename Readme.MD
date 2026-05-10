@@ -26,3 +26,18 @@ dconf write /org/gnome/shell/extensions/paperwm/show-workspace-indicator false
 sudo nix-channel --add https://nixos.org/channels/nixos-unstable nixos-unstable
 sudo nix-channel --update
 ```
+
+## Fingerprint
+
+```bash
+sudo validity-sensors-firmware   # first-time firmware init
+sudo systemctl start python3-validity
+sudo systemctl enable python3-validity
+fprintd-enroll
+ ```
+- You will have to enroll multiple times from muliple angles utill you get successfull
+- To test it use
+
+```bash
+fprintd-verify
+```

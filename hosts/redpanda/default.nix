@@ -6,6 +6,7 @@
     ./../../modules/system/core.nix
     ./../../modules/system/desktop.nix
     ./../../modules/system/fonts.nix
+    ./../../modules/system/fingerprint.nix
   ];
 
   boot.loader.systemd-boot.enable = true;

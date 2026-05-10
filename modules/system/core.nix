@@ -35,6 +35,7 @@
     tlp
     tealdeer
     fastfetch
+    python3
     neovide
     mpv
     onlyoffice-desktopeditors
