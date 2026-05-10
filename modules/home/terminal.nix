@@ -18,18 +18,18 @@
       };
       cursor.style = { shape = "Beam"; blinking = "On"; };
       colors = {
-        primary = { background = "#2e3436"; foreground = "#d3d6c9"; };
-        cursor  = { text = "#2e3436"; cursor = "#ffffff"; };
-        selection = { text = "#2e3436"; background = "#ffffff"; };
+        primary = { background = "#2d353b"; foreground = "#d3c6aa"; };
+        cursor  = { text = "#2d353b"; cursor = "#d3c6aa"; };
+        selection = { text = "#d3c6aa"; background = "#503946"; };
         normal = {
-          black   = "#2e3436"; red     = "#cd3e11"; green   = "#8ae234";
-          yellow  = "#fce94f"; blue    = "#729fcf"; magenta = "#ad7fa8";
-          cyan    = "#34e2e2"; white   = "#d3d6c9";
+          black   = "#475258"; red     = "#e67e80"; green   = "#a7c080";
+          yellow  = "#dbbc7f"; blue    = "#7fbbb3"; magenta = "#d699b6";
+          cyan    = "#83c092"; white   = "#d3c6aa";
         };
         bright = {
-          black   = "#555753"; red     = "#ef2929"; green   = "#9aff87";
-          yellow  = "#f5f749"; blue    = "#82afff"; magenta = "#f587ff";
-          cyan    = "#8aeae2"; white   = "#ffffff";
+          black   = "#475258"; red     = "#e67e80"; green   = "#a7c080";
+          yellow  = "#dbbc7f"; blue    = "#7fbbb3"; magenta = "#d699b6";
+          cyan    = "#83c092"; white   = "#d3c6aa";
         };
       };
     };

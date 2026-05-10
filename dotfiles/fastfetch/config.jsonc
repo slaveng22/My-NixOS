@@ -9,35 +9,35 @@
     {
       "type": "title",
       "key": " ",
-      "keyColor": "red",
+      "keyColor": "green",
       "format": "{user-name}",
     },
     {
       "type": "title",
       "key": "󱋆 ",
-      "keyColor": "red",
+      "keyColor": "green",
       "format": "{host-name}",
     },
     {
       "type": "terminal",
       "key": " ",
-      "keyColor": "red",
+      "keyColor": "green",
     },
     {
       "type": "locale",
       "key": " ",
-      "keyColor": "red",
+      "keyColor": "green",
     },
     {
       "type": "os",
       "key": "󰇄 ",
-      "keyColor": "red",
+      "keyColor": "green",
       "format": "{name} {version}",
     },
     {
       "type": "kernel",
       "key": " ",
-      "keyColor": "red",
+      "keyColor": "green",
     },
     {
       "key": "╠══════════════════════════════════════════╣",
@@ -47,19 +47,19 @@
     {
       "type": "cpu",
       "key": "󰍛 ",
-      "keyColor": "red",
+      "keyColor": "yellow",
       "format": "{name}",
     },
     {
       "type": "gpu",
       "key": "󰘚 ",
-      "keyColor": "red",
+      "keyColor": "yellow",
       "format": "{name}",
     },
     {
       "type": "localip",
       "key": "󰩟 ",
-      "keyColor": "red",
+      "keyColor": "yellow",
       "format": "{ipv4} ({ifname})",
     },
     {
@@ -70,7 +70,7 @@
     {
       "type": "memory",
       "key": " ",
-      "keyColor": "red",
+      "keyColor": "cyan",
       "percentColor": {
         "0": "green",
         "25": "yellow",
@@ -80,7 +80,7 @@
     {
       "type": "swap",
       "key": "󰾵 ",
-      "keyColor": "red",
+      "keyColor": "cyan",
       "percentColor": {
         "0": "green",
         "25": "yellow",
@@ -90,7 +90,7 @@
     {
       "type": "disk",
       "key": "󰉉 ",
-      "keyColor": "red",
+      "keyColor": "cyan",
       "folders": "/",
       "percentColor": {
         "0": "green",
@@ -106,7 +106,7 @@
     {
       "type": "battery",
       "key": "󱊥 ",
-      "keyColor": "red",
+      "keyColor": "cyan",
       "percentColor": {
         "0": "red",
         "25": "yellow",
@@ -116,7 +116,7 @@
     {
       "type": "uptime",
       "key": "󰅐 ",
-      "keyColor": "red",
+      "keyColor": "cyan",
     },
     {
       "key": "╚══════════════════════════════════════════╝",
@@ -125,13 +125,13 @@
     },
   ],
   "logo": {
-    "type": "auto" ,
+    "type": "auto",
     "source": "nixos",
     // "type": "file",
     // "source": "/home/slaven/.config/fastfetch/RPandaASCII.txt",
-    "color": { 
-        "1": "red",
-        "2": "white" 
+    "color": {
+      "1": "green",
+      "2": "cyan"
     },
   },
 }
