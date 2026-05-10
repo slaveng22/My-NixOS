@@ -11,8 +11,8 @@
 - [x] find soluton for tray │
 - [x] nvim config │
 - [x] Check why is everything so slow - performance mode and zram[
-- [ ] Fingerprint sudo with open-fprintd │
-- [ ] replace superfile with yazi │
+- [x] Fingerprint sudo with open-fprintd │
+- [x] replace superfile with yazi │
 - [ ] Auto-unlock encrypted disk │
 - [ ] check nixos config for improvements │
 - [ ] How to do updates
