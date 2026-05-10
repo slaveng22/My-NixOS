@@ -13,9 +13,8 @@
 - [x] Check why is everything so slow - performance mode and zram[
 - [x] Fingerprint sudo with open-fprintd │
 - [x] replace superfile with yazi │
+- [x] How to do updates
 - [ ] Auto-unlock encrypted disk │
 - [ ] check nixos config for improvements │
-- [ ] How to do updates
-- [ ] Install kando and learn how to use it
 - [ ] Move everything to new google account │
 - [ ] Google drives not accessable │

@@ -1,6 +1,33 @@
 { pkgs, ... }:
 
 {
+  gtk = {
+    enable = true;
+    theme = {
+      name = "Gruvbox-Dark";
+      package = pkgs.gruvbox-gtk-theme;
+    };
+    iconTheme = {
+      name = "Gruvbox-Plus-Dark";
+      package = pkgs.gruvbox-plus-icons;
+    };
+    cursorTheme = {
+      name = "Bibata-Modern-Classic";
+      package = pkgs.bibata-cursors;
+    };
+  };
+
+  dconf.settings = {
+    "org/gnome/desktop/interface" = {
+      gtk-theme = "Gruvbox-Dark";
+      icon-theme = "Gruvbox-Plus-Dark";
+      cursor-theme = "Bibata-Modern-Classic";
+      color-scheme = "prefer-dark";
+    };
+    "org/gnome/desktop/wm/preferences" = {
+      theme = "Gruvbox-Dark";
+    };
+  };
   programs.git = {
     enable = true;
     settings = {
