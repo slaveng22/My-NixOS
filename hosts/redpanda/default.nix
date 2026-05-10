@@ -2,7 +2,7 @@
 
 {
   imports = [
-    ./../../hardware-configuration.nix
+    ./hardware-configuration.nix
     ./../../modules/system/core.nix
     ./../../modules/system/desktop.nix
     ./../../modules/system/fonts.nix
@@ -14,7 +14,11 @@
 
   networking.hostName = "redpanda";
   networking.networkmanager.enable = true;
-  networking.firewall.enable = false;
+  networking.firewall = {
+    enable = true;
+    allowedTCPPortRanges = [{ from = 1714; to = 1764; }];
+    allowedUDPPortRanges = [{ from = 1714; to = 1764; }];
+  };
 
   time.timeZone = "Europe/Belgrade";
   i18n.defaultLocale = "en_US.UTF-8";

@@ -16,6 +16,8 @@
     };
   };
 
+  xdg.configFile."yazi/theme.toml".source = ../../dotfiles/yazi/theme.toml;
+
   home.packages = with pkgs; [
     bitwarden-desktop
     obsidian
@@ -24,5 +26,6 @@
     lazygit
     nodejs
     unzip
+    yazi
   ];
 }

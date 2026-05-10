@@ -1,43 +1,47 @@
-- Backup original config
+# My NixOS — redpanda
 
-```bash
-sudo mv /etc/nixos/configuration.nix /etc/nixos/configuration.nix.BAK
-sudo mv /etc/nixos/hardware-configuration.nix /etc/nixos/hardware-configuration.nix.BAK
+Personal NixOS configuration for the `redpanda` host using flakes and Home Manager.
+
+## Structure
+
+```
+.
+├── flake.nix
+├── hosts/
+│   └── redpanda/
+│       ├── default.nix
+│       └── hardware-configuration.nix
+├── modules/
+│   ├── system/          # core, desktop, fonts, fingerprint
+│   └── home/            # shell, terminal, editor, apps, zellij
+├── dotfiles/            # fastfetch, oh-my-posh, yazi configs
+├── pkgs/                # python-validity custom package
+└── images/              # wallpapers and profile picture
 ```
 
-- Symlink configs
+## Install
 
 ```bash
-sudo ln -s $(pwd)/configuration.nix /etc/nixos/configuration.nix
-sudo ln -s $(pwd)/hardware-configuration.nix /etc/nixos/hardware-configuration.nix
-``` 
+sudo nixos-rebuild switch --flake .#redpanda
+```
 
-- Bitwarden and Signal desktop tray should be configured in app settings itslef
+## Post-install
 
-- Disable workspace indiator in PaperWM (requires logout)
+**Fingerprint (first time only)**
+
+```bash
+sudo validity-sensors-firmware   # firmware init
+sudo systemctl start python3-validity
+fprintd-enroll                   # enroll from multiple angles until successful
+fprintd-verify                   # test
+```
+
+**GNOME tweaks**
+
+Disable PaperWM workspace indicator (requires logout):
 
 ```bash
 dconf write /org/gnome/shell/extensions/paperwm/show-workspace-indicator false
 ```
 
-- Allow unstable channel for Nix
-
-```bash
-sudo nix-channel --add https://nixos.org/channels/nixos-unstable nixos-unstable
-sudo nix-channel --update
-```
-
-## Fingerprint
-
-```bash
-sudo validity-sensors-firmware   # first-time firmware init
-sudo systemctl start python3-validity
-sudo systemctl enable python3-validity
-fprintd-enroll
- ```
-- You will have to enroll multiple times from muliple angles utill you get successfull
-- To test it use
-
-```bash
-fprintd-verify
-```
+Bitwarden and Signal tray icons must be enabled in each app's settings.

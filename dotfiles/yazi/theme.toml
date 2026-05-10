@@ -1,0 +1,99 @@
+# Yazi Everforest Dark Theme
+
+[flavor]
+use = ""
+
+[mgr]
+cwd = { fg = "#a7c080" }
+
+hovered         = { fg = "#2d353b", bg = "#a7c080" }
+preview_hovered = { underline = true }
+
+find_keyword  = { fg = "#dbbc7f", bold = true, italic = true, underline = true }
+find_position = { fg = "#e69875", bg = "reset", bold = true, italic = true }
+
+marker_copied  = { fg = "#dbbc7f", bg = "#dbbc7f" }
+marker_cut     = { fg = "#e67e80", bg = "#e67e80" }
+marker_marked  = { fg = "#d699b6", bg = "#d699b6" }
+marker_selected = { fg = "#7fbbb3", bg = "#7fbbb3" }
+
+tab_active   = { fg = "#2d353b", bg = "#a7c080" }
+tab_inactive = { fg = "#d3c6aa", bg = "#3d484d" }
+tab_width    = 1
+
+count_copied   = { fg = "#2d353b", bg = "#dbbc7f" }
+count_cut      = { fg = "#2d353b", bg = "#e67e80" }
+count_selected = { fg = "#2d353b", bg = "#7fbbb3" }
+
+border_symbol = "│"
+border_style  = { fg = "#475258" }
+
+[status]
+separator_open  = ""
+separator_close = ""
+separator_style = { fg = "#3d484d", bg = "#3d484d" }
+
+mode_normal = { fg = "#2d353b", bg = "#a7c080", bold = true }
+mode_select = { fg = "#2d353b", bg = "#7fbbb3", bold = true }
+mode_unset  = { fg = "#2d353b", bg = "#dbbc7f", bold = true }
+
+progress_label  = { fg = "#d3c6aa", bold = true }
+progress_normal = { fg = "#7fbbb3", bg = "#3d484d" }
+progress_error  = { fg = "#e67e80", bg = "#3d484d" }
+
+permissions_t = { fg = "#a7c080" }
+permissions_r = { fg = "#dbbc7f" }
+permissions_w = { fg = "#e67e80" }
+permissions_x = { fg = "#7fbbb3" }
+permissions_s = { fg = "#475258" }
+
+[input]
+border   = { fg = "#a7c080" }
+title    = {}
+value    = {}
+selected = { reversed = true }
+
+[completion]
+border   = { fg = "#a7c080" }
+active   = { bg = "#3d484d" }
+inactive = {}
+
+[tasks]
+border  = { fg = "#a7c080" }
+title   = {}
+hovered = { underline = true }
+
+[which]
+mask            = { bg = "#272e33" }
+cand            = { fg = "#7fbbb3" }
+rest            = { fg = "#5c6a72" }
+desc            = { fg = "#d3c6aa" }
+separator       = "  "
+separator_style = { fg = "#475258" }
+
+[help]
+on      = { fg = "#7fbbb3" }
+run     = { fg = "#d699b6" }
+desc    = { fg = "#d3c6aa" }
+hovered = { bg = "#3d484d", bold = true }
+footer  = { fg = "#2d353b", bg = "#a7c080" }
+
+[filetype]
+rules = [
+  # Images
+  { mime = "image/*", fg = "#7fbbb3" },
+  # Videos / Audio
+  { mime = "video/*", fg = "#dbbc7f" },
+  { mime = "audio/*", fg = "#dbbc7f" },
+  # Archives
+  { mime = "application/zip",             fg = "#e67e80" },
+  { mime = "application/gzip",            fg = "#e67e80" },
+  { mime = "application/x-tar",           fg = "#e67e80" },
+  { mime = "application/x-bzip",          fg = "#e67e80" },
+  { mime = "application/x-bzip2",         fg = "#e67e80" },
+  { mime = "application/x-7z-compressed", fg = "#e67e80" },
+  { mime = "application/x-rar",           fg = "#e67e80" },
+  # Fallback
+  { name = "*/", fg = "#a7c080" },
+  { name = "*",  fg = "#d3c6aa" },
+]

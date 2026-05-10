@@ -35,6 +35,7 @@
       rm     = "trash-put";
       bat    = "bat --color=always";
       cfzf   = "fzf --preview='bat --color=always {}'";
+      yz     = "yazi_cd";
     };
 
     initExtra = ''
@@ -55,6 +56,17 @@
         fi
       }
       bind -x '"\C-r": __fzf_history_search'
+
+      # Yazi with cd-on-exit
+      yazi_cd() {
+        local tmp
+        tmp=$(mktemp)
+        yazi "$@" --cwd-file="$tmp"
+        if [ -s "$tmp" ]; then
+          builtin cd "$(cat "$tmp")" && ls --color=auto
+        fi
+        command rm -f "$tmp"
+      }
 
       # Zellij session picker
       zj() {

@@ -24,6 +24,8 @@
 
   services.openssh.enable = true;
 
+  services.tlp.enable = true;
+
   environment.systemPackages = with pkgs; [
     btop
     fzf
@@ -32,7 +34,6 @@
     bat
     trash-cli
     nmap
-    tlp
     tealdeer
     fastfetch
     python3
