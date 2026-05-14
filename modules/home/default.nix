@@ -7,6 +7,7 @@
     ./terminal.nix
     ./editor.nix
     ./zellij.nix
+    ./btop.nix
   ];
 
   home.username = "slaven";

@@ -26,7 +26,6 @@
   services.power-profiles-daemon.enable = false;
 
   environment.systemPackages = with pkgs; [
-    btop
     fzf
     ripgrep
     wl-clipboard
