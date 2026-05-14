@@ -43,6 +43,15 @@ fprintd-verify                   # test
 ```bash
 dconf write /org/gnome/shell/extensions/paperwm/show-workspace-indicator false
 ```
+**LUKS TPM 2.0 unlock enroll**
+
+
+```bash
+sudo systemd-cryptenroll \
+    --tpm2-device=auto \
+    --tpm2-pcrs=0+7 \
+    /dev/disk/by-uuid/9480f720-39f1-4bc5-9807-34f3c9ace63b
+```
 
 - Bitwarden and Signal tray icons must be enabled in each app's settings.
 

@@ -29,7 +29,12 @@
       fsType = "ext4";
     };
 
-  boot.initrd.luks.devices."luks-9480f720-39f1-4bc5-9807-34f3c9ace63b".device = "/dev/disk/by-uuid/9480f720-39f1-4bc5-9807-34f3c9ace63b";
+  boot.initrd.systemd.enable = true;
+
+  boot.initrd.luks.devices."luks-9480f720-39f1-4bc5-9807-34f3c9ace63b" = {
+    device = "/dev/disk/by-uuid/9480f720-39f1-4bc5-9807-34f3c9ace63b";
+    crypttabExtraOpts = [ "tpm2-device=auto" ];
+  };
 
   swapDevices = [ ];
 
