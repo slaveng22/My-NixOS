@@ -14,7 +14,7 @@
 - [x] Fingerprint sudo with open-fprintd │
 - [x] replace superfile with yazi │
 - [x] How to do updates
-- [ ] Auto-unlock encrypted disk │
-- [ ] check nixos config for improvements │
+- [x] Auto-unlock encrypted disk │
+- [x] check nixos config for improvements │
 - [ ] Move everything to new google account │
 - [ ] Google drives not accessable │

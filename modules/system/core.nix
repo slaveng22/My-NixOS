@@ -22,8 +22,6 @@
     enableSSHSupport = true;
   };
 
-  services.openssh.enable = true;
-
   services.tlp.enable = true;
   services.power-profiles-daemon.enable = false;
 
