@@ -1,12 +1,15 @@
 { pkgs, ... }:
 
 {
-  # oh-my-posh theme
-  xdg.configFile."oh-my-posh/emodipt.omp.json".source = ../../dotfiles/oh-my-posh/emodipt.omp.json;
-
   # fastfetch config
   xdg.configFile."fastfetch/config.jsonc".source = ../../dotfiles/fastfetch/config.jsonc;
-  xdg.configFile."fastfetch/RPandaASCII.txt".source = ../../dotfiles/fastfetch/RPandaASCII.txt;
+
+  programs.oh-my-posh = {
+    enable = true;
+    enableBashIntegration = true;
+    # Read your custom JSON directly into the native Home Manager module settings
+    settings = builtins.fromJSON (builtins.readFile ../../dotfiles/oh-my-posh/emodipt.omp.json);
+  };
 
   programs.bash = {
     enable = true;
@@ -74,9 +77,6 @@
         session=$(zellij list-sessions -ns | fzf --prompt="Pick session: " --height=40%)
         [ -n "$session" ] && zellij attach "$session"
       }
-
-      # oh-my-posh prompt
-      eval "$(oh-my-posh init bash --config ~/.config/oh-my-posh/emodipt.omp.json)"
     '';
   };
 }
