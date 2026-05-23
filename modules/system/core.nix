@@ -38,6 +38,7 @@
     neovide
     mpv
     onlyoffice-desktopeditors
+    rpi-imager
     transmission_4-gtk
     thunderbird
     signal-desktop
