@@ -54,5 +54,6 @@
     nodejs
     unzip
     yazi
+    claude-code
   ];
 }
