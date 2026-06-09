@@ -15,10 +15,18 @@ in {
   services.dbus.packages = [ pkgs.open-fprintd python-validity ];
 
   systemd.services.open-fprintd.wantedBy = [ "multi-user.target" ];
-  systemd.services.python3-validity.wantedBy = [ "multi-user.target" ];
+  systemd.services.python3-validity = {
+    wantedBy = [ "multi-user.target" ];
+    serviceConfig = {
+      Restart = "on-failure";
+      RestartSec = "3s";
+    };
+  };
 
   security.pam.services = {
     sudo.fprintAuth = true;
     gnome-screensaver.fprintAuth = true;
   };
+
+  security.sudo.extraConfig = "Defaults pwfeedback";
 }
