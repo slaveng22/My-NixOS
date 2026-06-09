@@ -11,7 +11,7 @@
   nix.gc = {
     automatic = true;
     dates = "weekly";
-    options = "--delete-older-than 7d";
+    options = "--keep-last 5 --delete-older-than 14d";
   };
 
   # Allow running regular Linux libraries on NixOS
