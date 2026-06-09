@@ -8,7 +8,7 @@ let
     exec sudo PYTHONPATH=$SITEPKGS $INTERP ${python-validity}/share/python-validity/playground/factory-reset.py
   '';
 in {
-  environment.systemPackages = [ pkgs.open-fprintd pkgs.fprintd pkgs.innoextract python-validity factory-reset ];
+  environment.systemPackages = [ pkgs.open-fprintd pkgs.innoextract python-validity factory-reset ];
 
   systemd.packages = [ pkgs.open-fprintd python-validity ];
 
