@@ -17,17 +17,6 @@
     };
   };
 
-  dconf.settings = {
-    "org/gnome/desktop/interface" = {
-      gtk-theme = "Gruvbox-Dark";
-      icon-theme = "Gruvbox-Plus-Dark";
-      cursor-theme = "Bibata-Modern-Classic";
-      color-scheme = "prefer-dark";
-    };
-    "org/gnome/desktop/wm/preferences" = {
-      theme = "Gruvbox-Dark";
-    };
-  };
   programs.git = {
     enable = true;
     settings = {

@@ -8,6 +8,9 @@
     ./editor.nix
     ./zellij.nix
     ./btop.nix
+    ./niri.nix
+    ./waybar.nix
+    ./mako.nix
   ];
 
   home.username = "slaven";

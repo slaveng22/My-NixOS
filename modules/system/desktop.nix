@@ -1,17 +1,42 @@
 { pkgs, ... }:
 
-{
-  services.xserver.enable = true;
-  services.desktopManager.gnome.enable = true;
-  services.displayManager.gdm.enable = true;
-  services.gnome.gnome-browser-connector.enable = true;
+let
+  gtkgreetStyle = pkgs.writeText "gtkgreet.css" ''
+    window {
+      background-color: #2d353b;
+      color: #d3c6aa;
+    }
+    entry, button, combobox > * > * {
+      background-color: #3d484d;
+      color: #d3c6aa;
+      border: 1px solid #475258;
+      border-radius: 4px;
+    }
+    button:hover {
+      background-color: #475258;
+    }
+  '';
+in {
+  programs.niri.enable = true;
 
-  services.xserver.xkb = {
-    layout = "us";
-    variant = "";
+  services.greetd = {
+    enable = true;
+    settings = {
+      default_session = {
+        command = "${pkgs.cage}/bin/cage -s -- ${pkgs.greetd.gtkgreet}/bin/gtkgreet -l -s ${gtkgreetStyle}";
+        user = "greeter";
+      };
+    };
   };
 
-  services.printing.enable = false;
+  security.pam.services.gtklock = { };
+  security.polkit.enable = true;
+
+  xdg.portal = {
+    enable = true;
+    extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
+    config.common.default = "gtk";
+  };
 
   services.pulseaudio.enable = false;
   security.rtkit.enable = true;
@@ -22,38 +47,21 @@
     pulse.enable = true;
   };
 
+  services.printing.enable = false;
+
   programs.firefox.enable = true;
 
-  services.xserver.excludePackages = with pkgs; [ xterm ];
-
-  environment.gnome.excludePackages = with pkgs; [
-    epiphany
-    gnome-music
-    gnome-tour
-    simple-scan
-    gnome-console
-    gnome-weather
-    gnome-maps
-    showtime
-    decibels
-    gnome-system-monitor
-    gnome-text-editor
-  ];
-
   environment.systemPackages = with pkgs; [
-    gnome-tweaks
-    gruvbox-gtk-theme
-    gruvbox-plus-icons
-    everforest-gtk-theme
-    bibata-cursors
-    gnomeExtensions.paperwm
-    gnomeExtensions.auto-move-windows
-    gnomeExtensions.caffeine
-    gnomeExtensions.clipboard-indicator
-    gnomeExtensions.gsconnect
-    gnomeExtensions.media-controls
-    gnomeExtensions.appindicator
-    gnomeExtensions.space-bar
-    gnomeExtensions.logo-menu
+    waybar
+    mako
+    fuzzel
+    gtklock
+    swayidle
+    grim
+    slurp
+    swappy
+    cliphist
+    brightnessctl
+    polkit_gnome
   ];
 }
