@@ -1,29 +1,13 @@
 { pkgs, ... }:
 
-let
-  gtkgreetStyle = pkgs.writeText "gtkgreet.css" ''
-    window {
-      background-color: #2d353b;
-      color: #d3c6aa;
-    }
-    entry, button, combobox > * > * {
-      background-color: #3d484d;
-      color: #d3c6aa;
-      border: 1px solid #475258;
-      border-radius: 4px;
-    }
-    button:hover {
-      background-color: #475258;
-    }
-  '';
-in {
+{
   programs.niri.enable = true;
 
   services.greetd = {
     enable = true;
     settings = {
       default_session = {
-        command = "${pkgs.cage}/bin/cage -s -- ${pkgs.greetd.gkgreet}/bin/gkgreet -s ${gtkgreetStyle} --sessions-path /run/current-system/sw/share/wayland-sessions";
+        command = "${pkgs.greetd.tuigreet}/bin/tuigreet --time --remember --sessions /run/current-system/sw/share/wayland-sessions";
         user = "greeter";
       };
     };
