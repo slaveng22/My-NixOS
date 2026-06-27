@@ -10,6 +10,80 @@ let
 in {
   home.packages = [ screenshot-area cliphist-pick ];
 
+  xdg.configFile."wlogout/style.css".text = ''
+    * {
+        background-image: none;
+        box-shadow: none;
+    }
+
+    window {
+        background-color: rgba(45, 53, 59, 0.9);
+    }
+
+    button {
+        font-family: "JetBrainsMono Nerd Font";
+        font-size: 16px;
+        border-radius: 8px;
+        border: 2px solid transparent;
+        color: #d3c6aa;
+        background-color: #323d43;
+        margin: 8px;
+        padding: 30px 20px;
+        min-width: 120px;
+        min-height: 90px;
+    }
+
+    button:hover {
+        background-color: #3c4841;
+        border-color: #a7c080;
+        color: #a7c080;
+    }
+
+    button:active {
+        background-color: #475258;
+        border-color: #a7c080;
+    }
+  '';
+
+  xdg.configFile."wlogout/layout".text = ''
+    {
+        "label" : "lock",
+        "action" : "${pkgs.gtklock}/bin/gtklock",
+        "text" : "Lock",
+        "keybind" : "l"
+    }
+    {
+        "label" : "logout",
+        "action" : "loginctl terminate-user $USER",
+        "text" : "Logout",
+        "keybind" : "e"
+    }
+    {
+        "label" : "suspend",
+        "action" : "systemctl suspend",
+        "text" : "Suspend",
+        "keybind" : "u"
+    }
+    {
+        "label" : "hibernate",
+        "action" : "systemctl hibernate",
+        "text" : "Hibernate",
+        "keybind" : "h"
+    }
+    {
+        "label" : "reboot",
+        "action" : "systemctl reboot",
+        "text" : "Reboot",
+        "keybind" : "r"
+    }
+    {
+        "label" : "shutdown",
+        "action" : "systemctl poweroff",
+        "text" : "Shutdown",
+        "keybind" : "s"
+    }
+  '';
+
   xdg.configFile."niri/config.kdl".text = ''
     input {
       keyboard {
@@ -54,13 +128,17 @@ in {
       XDG_CURRENT_DESKTOP "niri"
     }
 
+    hotkey-overlay {
+      skip-at-startup
+    }
+
     prefer-no-csd
 
-    screenshot-path "~/Pictures/Screenshots/%Y-%m-%d %H-%M-%S.png"
-
-    spawn-at-startup "${pkgs.mako}/bin/mako"
-    spawn-at-startup "${pkgs.waybar}/bin/waybar"
-    spawn-at-startup "${pkgs.swayidle}/bin/swayidle" "-w" "timeout" "300" "${pkgs.gtklock}/bin/gtklock" "timeout" "600" "niri msg action power-off-monitors" "before-sleep" "${pkgs.gtklock}/bin/gtklock"
+    spawn-at-startup "sh" "-c" "systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP DISPLAY && systemctl --user start graphical-session.target"
+    spawn-at-startup "${pkgs.gnome-keyring}/bin/gnome-keyring-daemon" "--start" "--components=secrets"
+    spawn-at-startup "${pkgs.ironbar}/bin/ironbar"
+    spawn-at-startup "${pkgs.networkmanagerapplet}/bin/nm-applet" "--indicator"
+    spawn-at-startup "${pkgs.swayidle}/bin/swayidle" "-w" "timeout" "600" "${pkgs.gtklock}/bin/gtklock" "timeout" "1200" "niri msg action power-off-monitors" "timeout" "1800" "systemctl suspend" "before-sleep" "${pkgs.gtklock}/bin/gtklock"
     spawn-at-startup "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1"
     spawn-at-startup "${pkgs.wl-clipboard}/bin/wl-paste" "--watch" "${pkgs.cliphist}/bin/cliphist" "store"
 
@@ -77,9 +155,7 @@ in {
       Mod+V { spawn "${cliphist-pick}/bin/cliphist-pick"; }
 
       // Screenshots
-      Print { screenshot; }
-      Shift+Print { screenshot-screen; }
-      Alt+Print { screenshot-window; }
+      Print { spawn "${screenshot-area}/bin/screenshot-area"; }
       Mod+Shift+S { spawn "${screenshot-area}/bin/screenshot-area"; }
 
       // Volume
@@ -129,7 +205,8 @@ in {
       Mod+Shift+5 { move-window-to-workspace 5; }
 
       // Niri controls
-      Mod+Shift+E { quit; }
+      Mod+Shift+W { spawn "${pkgs.wlogout}/bin/wlogout"; }
+      Mod+Shift+Q { close-window; }
       Mod+Shift+P { power-off-monitors; }
     }
   '';

@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, unstable, ... }:
 
 {
   gtk = {
@@ -35,10 +35,17 @@
   xdg.configFile."yazi/theme.toml".source = ../../dotfiles/yazi/theme.toml;
 
   home.packages = with pkgs; [
-    bitwarden-desktop
-    obsidian
+    unstable.obsidian
+    (pkgs.symlinkJoin {
+      name = "signal-desktop";
+      paths = [ unstable.signal-desktop ];
+      nativeBuildInputs = [ pkgs.makeWrapper ];
+      postBuild = ''
+        wrapProgram $out/bin/signal-desktop \
+          --add-flags "--ozone-platform=wayland --enable-features=UseOzonePlatform,WaylandWindowDecorations"
+      '';
+    })
     oh-my-posh
-    discord
     lazygit
     nodejs
     unzip

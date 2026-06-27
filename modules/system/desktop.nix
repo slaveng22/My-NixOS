@@ -2,12 +2,13 @@
 
 {
   programs.niri.enable = true;
+  programs.xwayland.enable = true;
 
   services.greetd = {
     enable = true;
     settings = {
       default_session = {
-        command = "${pkgs.tuigreet}/bin/tuigreet --time --remember --remember-session --sessions /run/current-system/sw/share/wayland-sessions --cmd niri";
+        command = "${pkgs.cage}/bin/cage -s -- ${pkgs.gtkgreet}/bin/gtkgreet";
         user = "greeter";
       };
     };
@@ -19,7 +20,10 @@
   xdg.portal = {
     enable = true;
     extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
-    config.common.default = "gtk";
+    config = {
+      niri.default = [ "gtk" ];
+      common.default = "gtk";
+    };
   };
 
   services.pulseaudio.enable = false;
@@ -31,13 +35,13 @@
     pulse.enable = true;
   };
 
-  services.printing.enable = false;
+  services.upower.enable = true;
 
   programs.firefox.enable = true;
 
   environment.systemPackages = with pkgs; [
-    waybar
-    mako
+    wlogout
+    networkmanagerapplet
     fuzzel
     gtklock
     swayidle

@@ -10,12 +10,17 @@
     };
   };
 
-  outputs = { self, nixpkgs, nixpkgs-unstable, home-manager, ... }: {
+  outputs = { self, nixpkgs, nixpkgs-unstable, home-manager, ... }:
+  let
+    unstable = import nixpkgs-unstable {
+      system = "x86_64-linux";
+      config.allowUnfree = true;
+    };
+  in {
     nixosConfigurations.redpanda = nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
       specialArgs = {
-        inherit self;
-        unstable = nixpkgs-unstable.legacyPackages.x86_64-linux;
+        inherit self unstable;
       };
       modules = [
         ./hosts/redpanda/default.nix
@@ -24,7 +29,7 @@
           home-manager.useGlobalPkgs = true;
           home-manager.useUserPackages = true;
           home-manager.extraSpecialArgs = {
-            unstable = nixpkgs-unstable.legacyPackages.x86_64-linux;
+            inherit unstable;
           };
           home-manager.users.slaven = import ./modules/home/default.nix;
         }
