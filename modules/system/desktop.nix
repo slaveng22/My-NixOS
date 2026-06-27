@@ -23,7 +23,7 @@ in {
     enable = true;
     settings = {
       default_session = {
-        command = "${pkgs.cage}/bin/cage -s -- ${pkgs.greetd.gtkgreet}/bin/gtkgreet -s ${gtkgreetStyle}";
+        command = "${pkgs.cage}/bin/cage -s -- ${pkgs.greetd.gkgreet}/bin/gkgreet -s ${gtkgreetStyle} --sessions-path /run/current-system/sw/share/wayland-sessions";
         user = "greeter";
       };
     };
