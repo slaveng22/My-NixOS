@@ -50,6 +50,7 @@
     nodejs
     unzip
     yazi
+    pkgs.xfce.thunar
     claude-code
   ];
 }

@@ -10,6 +10,13 @@ let
 in {
   home.packages = [ screenshot-area cliphist-pick ];
 
+  home.pointerCursor = {
+    package = pkgs.bibata-cursors;
+    name = "Bibata-Modern-Classic";
+    size = 24;
+    gtk.enable = true;
+  };
+
   xdg.configFile."wlogout/style.css".text = ''
     * {
         background-image: none;
@@ -43,43 +50,85 @@ in {
         background-color: #475258;
         border-color: #a7c080;
     }
+
+    #lock {
+        background-image: image(url("${pkgs.wlogout}/share/wlogout/icons/lock.png"));
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: 40%;
+    }
+
+    #logout {
+        background-image: image(url("${pkgs.wlogout}/share/wlogout/icons/logout.png"));
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: 40%;
+    }
+
+    #suspend {
+        background-image: image(url("${pkgs.wlogout}/share/wlogout/icons/suspend.png"));
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: 40%;
+    }
+
+    #hibernate {
+        background-image: image(url("${pkgs.wlogout}/share/wlogout/icons/hibernate.png"));
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: 40%;
+    }
+
+    #reboot {
+        background-image: image(url("${pkgs.wlogout}/share/wlogout/icons/reboot.png"));
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: 40%;
+    }
+
+    #shutdown {
+        background-image: image(url("${pkgs.wlogout}/share/wlogout/icons/shutdown.png"));
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: 40%;
+    }
   '';
 
   xdg.configFile."wlogout/layout".text = ''
     {
         "label" : "lock",
         "action" : "${pkgs.gtklock}/bin/gtklock",
-        "text" : "Lock",
+        "text" : "",
         "keybind" : "l"
     }
     {
         "label" : "logout",
         "action" : "loginctl terminate-user $USER",
-        "text" : "Logout",
+        "text" : "",
         "keybind" : "e"
     }
     {
         "label" : "suspend",
         "action" : "systemctl suspend",
-        "text" : "Suspend",
+        "text" : "",
         "keybind" : "u"
     }
     {
         "label" : "hibernate",
         "action" : "systemctl hibernate",
-        "text" : "Hibernate",
+        "text" : "",
         "keybind" : "h"
     }
     {
         "label" : "reboot",
         "action" : "systemctl reboot",
-        "text" : "Reboot",
+        "text" : "",
         "keybind" : "r"
     }
     {
         "label" : "shutdown",
         "action" : "systemctl poweroff",
-        "text" : "Shutdown",
+        "text" : "",
         "keybind" : "s"
     }
   '';
@@ -105,7 +154,7 @@ in {
     }
 
     layout {
-      gaps 8
+      gaps 16
 
       default-column-width { proportion 0.5; }
 
@@ -132,6 +181,11 @@ in {
       skip-at-startup
     }
 
+    cursor {
+      xcursor-theme "Bibata-Modern-Classic"
+      xcursor-size 24
+    }
+
     prefer-no-csd
 
     spawn-at-startup "sh" "-c" "systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP DISPLAY && systemctl --user start graphical-session.target"
@@ -141,6 +195,12 @@ in {
     spawn-at-startup "${pkgs.swayidle}/bin/swayidle" "-w" "timeout" "600" "${pkgs.gtklock}/bin/gtklock" "timeout" "1200" "niri msg action power-off-monitors" "timeout" "1800" "systemctl suspend" "before-sleep" "${pkgs.gtklock}/bin/gtklock"
     spawn-at-startup "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1"
     spawn-at-startup "${pkgs.wl-clipboard}/bin/wl-paste" "--watch" "${pkgs.cliphist}/bin/cliphist" "store"
+    spawn-at-startup "${pkgs.swaybg}/bin/swaybg" "-i" "/home/slaven/Pictures/Wallpapers/sesija-jezero.jpg" "-m" "fill"
+
+    window-rule {
+      geometry-corner-radius 12
+      clip-to-geometry true
+    }
 
     window-rule {
       match app-id="swappy"
@@ -151,7 +211,6 @@ in {
       // Apps
       Mod+Return { spawn "${pkgs.alacritty}/bin/alacritty"; }
       Mod+Space { spawn "${pkgs.fuzzel}/bin/fuzzel"; }
-      Mod+L { spawn "${pkgs.gtklock}/bin/gtklock"; }
       Mod+V { spawn "${cliphist-pick}/bin/cliphist-pick"; }
 
       // Screenshots
@@ -169,15 +228,22 @@ in {
       XF86MonBrightnessDown { spawn "${pkgs.brightnessctl}/bin/brightnessctl" "set" "5%-"; }
 
       // Window management
-      Mod+Q { close-window; }
       Mod+Left { focus-column-left; }
       Mod+Right { focus-column-right; }
       Mod+Up { focus-window-up; }
       Mod+Down { focus-window-down; }
+      Mod+H { focus-column-left; }
+      Mod+L { focus-column-right; }
+      Mod+K { focus-window-up; }
+      Mod+J { focus-window-down; }
       Mod+Shift+Left { move-column-left; }
       Mod+Shift+Right { move-column-right; }
       Mod+Shift+Up { move-window-up; }
       Mod+Shift+Down { move-window-down; }
+      Mod+Shift+H { move-column-left; }
+      Mod+Shift+L { move-column-right; }
+      Mod+Shift+K { move-window-up; }
+      Mod+Shift+J { move-window-down; }
       Mod+Home { focus-column-first; }
       Mod+End { focus-column-last; }
       Mod+Shift+Home { move-column-to-first; }

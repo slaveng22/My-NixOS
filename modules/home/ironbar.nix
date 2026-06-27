@@ -67,20 +67,39 @@
       padding: 0 8px;
     }
 
+    .clock {
+      border: 1px solid #a7c080;
+      border-radius: 6px;
+      margin: 4px 4px;
+    }
+
     .clock label {
       color: #7fbbb3;
       font-weight: bold;
-      padding: 0 12px;
+      padding: 0 10px;
     }
 
     .battery {
       color: #a7c080;
       padding: 0 8px;
+      border: 1px solid #a7c080;
+      border-radius: 6px;
+      margin: 4px 4px;
     }
 
-.volume {
+    .volume {
       color: #d699b6;
       padding: 0 8px;
+      border: 1px solid #a7c080;
+      border-radius: 6px;
+      margin: 4px 4px;
+    }
+
+    .tray {
+      border: 1px solid #a7c080;
+      border-radius: 6px;
+      padding: 0 8px;
+      margin: 4px 4px;
     }
 
     .network-manager {
