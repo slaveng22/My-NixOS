@@ -23,7 +23,7 @@ in {
     enable = true;
     settings = {
       default_session = {
-        command = "${pkgs.cage}/bin/cage -s -- ${pkgs.greetd.gtkgreet}/bin/gtkgreet -l -s ${gtkgreetStyle}";
+        command = "${pkgs.cage}/bin/cage -s -- ${pkgs.greetd.gtkgreet}/bin/gtkgreet -s ${gtkgreetStyle}";
         user = "greeter";
       };
     };
