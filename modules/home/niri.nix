@@ -7,8 +7,19 @@ let
   cliphist-pick = pkgs.writeShellScriptBin "cliphist-pick" ''
     ${pkgs.cliphist}/bin/cliphist list | ${pkgs.fuzzel}/bin/fuzzel --dmenu | ${pkgs.cliphist}/bin/cliphist decode | ${pkgs.wl-clipboard}/bin/wl-copy
   '';
+  wf-record-toggle = pkgs.writeShellScriptBin "wf-record-toggle" ''
+    mkdir -p "$HOME/Videos/Recordings"
+    if ${pkgs.procps}/bin/pgrep -x wf-recorder > /dev/null; then
+      ${pkgs.procps}/bin/pkill -SIGINT wf-recorder
+      ${pkgs.libnotify}/bin/notify-send "Recording stopped" "Saved to ~/Videos/Recordings"
+    else
+      ${pkgs.libnotify}/bin/notify-send "Recording started"
+      ${pkgs.wf-recorder}/bin/wf-recorder \
+        -f "$HOME/Videos/Recordings/$(date +%Y-%m-%d_%H-%M-%S).mp4"
+    fi
+  '';
 in {
-  home.packages = [ screenshot-area cliphist-pick ];
+  home.packages = [ screenshot-area cliphist-pick wf-record-toggle ];
 
   home.pointerCursor = {
     package = pkgs.bibata-cursors;
@@ -211,10 +222,12 @@ in {
 
 
 
+
     binds {
       // Apps
       Mod+Return { spawn "${pkgs.alacritty}/bin/alacritty"; }
       Mod+Space { spawn "${pkgs.fuzzel}/bin/fuzzel"; }
+      Mod+O { toggle-overview; }
       Mod+V { spawn "${cliphist-pick}/bin/cliphist-pick"; }
       Mod+Shift+Semicolon { spawn "${pkgs.bemoji}/bin/bemoji"; }
 
@@ -222,11 +235,15 @@ in {
       Print { spawn "${screenshot-area}/bin/screenshot-area"; }
       Mod+Shift+S { spawn "${screenshot-area}/bin/screenshot-area"; }
 
+
       // Volume
       XF86AudioRaiseVolume { spawn "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "5%+"; }
       XF86AudioLowerVolume { spawn "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "5%-"; }
       XF86AudioMute { spawn "wpctl" "set-mute" "@DEFAULT_AUDIO_SINK@" "toggle"; }
       XF86AudioMicMute { spawn "wpctl" "set-mute" "@DEFAULT_AUDIO_SOURCE@" "toggle"; }
+
+      // Screen recording
+      Mod+R { spawn "${wf-record-toggle}/bin/wf-record-toggle"; }
 
       // Brightness
       XF86MonBrightnessUp { spawn "${pkgs.brightnessctl}/bin/brightnessctl" "set" "5%+"; }
@@ -282,8 +299,11 @@ in {
     }
   '';
 
+  home.file.".face".source = ../../images/profile/redpanda.png;
+
   xdg.configFile."gtklock/config.ini".text = ''
     [main]
     background=${../../images/backgrounds/nixos-corner.png}
+    modules=${pkgs.gtklock-userinfo-module}/lib/gtklock/userinfo-module.so;${pkgs.gtklock-powerbar-module}/lib/gtklock/powerbar-module.so
   '';
 }

@@ -1,7 +1,22 @@
 { pkgs, ... }:
 
+let
+  nix-sysinfo = pkgs.writeShellScriptBin "nix-sysinfo" ''
+    host=$(${pkgs.coreutils}/bin/uname -n)
+    kernel=$(${pkgs.coreutils}/bin/uname -r)
+    uptime=$(${pkgs.procps}/bin/uptime -p | ${pkgs.gnused}/bin/sed 's/up //')
+    mem=$(${pkgs.procps}/bin/free -h | ${pkgs.gawk}/bin/awk '/^Mem:/ {print $3 " / " $2}')
+    disk=$(${pkgs.coreutils}/bin/df -h / | ${pkgs.gawk}/bin/awk 'NR==2 {print $3 " / " $2 " (" $5 ")"}')
+    cpu=$(${pkgs.gawk}/bin/awk -F': ' '/model name/ {print $2; exit}' /proc/cpuinfo)
+    ${pkgs.jq}/bin/jq -cn \
+      --arg host "$host" --arg cpu "$cpu" --arg kernel "$kernel" \
+      --arg uptime "$uptime" --arg mem "$mem" --arg disk "$disk" \
+      '{"text":"󱄅","tooltip":"\($host)\nCPU: \($cpu)\nKernel: \($kernel)\nUptime: \($uptime)\nRAM: \($mem)\nDisk: \($disk)"}'
+  '';
+in
+
 {
-  home.packages = [ pkgs.playerctl ];
+  home.packages = [ pkgs.playerctl nix-sysinfo ];
 
   programs.waybar = {
     enable = true;
@@ -9,12 +24,22 @@
     settings = [{
       layer = "top";
       position = "top";
-      height = 32;
+      height = 38;
       spacing = 0;
+      margin-top = 6;
+      margin-left = 8;
+      margin-right = 8;
 
-      modules-left = [ "niri/workspaces" ];
+      modules-left = [ "custom/nix" "niri/workspaces" ];
       modules-center = [ "mpris" ];
       modules-right = [ "tray" "pulseaudio" "battery" "clock" "custom/power" ];
+
+      "custom/nix" = {
+        exec = "${nix-sysinfo}/bin/nix-sysinfo";
+        return-type = "json";
+        interval = 30;
+        format = "{}";
+      };
 
       "niri/workspaces" = {
         format = "{value}";
@@ -60,7 +85,7 @@
 
       clock = {
         format = " {:%H:%M}";
-        tooltip-format = "{:%A, %d %B %Y}";
+        tooltip-format = "<big>{:%A, %d %B %Y}</big>\n<tt>{calendar}</tt>";
       };
 
       "custom/power" = {
@@ -84,7 +109,14 @@
       window#waybar {
         background-color: #2d353b;
         color: #d3c6aa;
-        border-bottom: 2px solid #343f44;
+        border: 2px solid #a7c080;
+        border-radius: 10px;
+      }
+
+      #custom-nix {
+        color: #7fbbb3;
+        font-size: 16px;
+        padding: 0 8px 0 12px;
       }
 
       #workspaces {
@@ -95,14 +127,16 @@
         color: #7a8478;
         padding: 2px 10px;
         background: transparent;
-        border-bottom: 2px solid transparent;
-        border-radius: 0;
+        border: 1px solid transparent;
+        border-radius: 6px;
         box-shadow: none;
       }
 
       #workspaces button.active {
         color: #a7c080;
-        border-bottom: 2px solid #a7c080;
+        background: rgba(167, 192, 128, 0.15);
+        border: 1px solid #a7c080;
+        border-radius: 6px;
       }
 
       #workspaces button:hover {
@@ -121,16 +155,12 @@
         font-weight: bold;
         padding: 0 10px;
         margin: 4px 4px;
-        border: 1px solid #a7c080;
-        border-radius: 6px;
       }
 
       #battery {
         color: #a7c080;
         padding: 0 8px;
         margin: 4px 4px;
-        border: 1px solid #a7c080;
-        border-radius: 6px;
       }
 
       #battery.charging {
@@ -143,7 +173,6 @@
 
       #battery.critical:not(.charging) {
         color: #e67e80;
-        border-color: #e67e80;
         animation: blink 1s ease-in-out infinite alternate;
       }
 
@@ -156,8 +185,6 @@
         color: #d699b6;
         padding: 0 8px;
         margin: 4px 4px;
-        border: 1px solid #a7c080;
-        border-radius: 6px;
       }
 
       #pulseaudio.muted {
@@ -167,16 +194,12 @@
       #tray {
         padding: 0 8px;
         margin: 4px 4px;
-        border: 1px solid #a7c080;
-        border-radius: 6px;
       }
 
       #custom-power {
         color: #e67e80;
         padding: 0 10px;
-        margin: 4px 4px;
-        border: 1px solid #e67e80;
-        border-radius: 6px;
+        margin: 4px 12px 4px 4px;
       }
 
       #custom-power:hover {

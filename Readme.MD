@@ -2,6 +2,20 @@
 
 Personal NixOS configuration for the `redpanda` host using flakes and Home Manager.
 
+## Stack
+
+- **Compositor:** Niri (Wayland)
+- **Greeter:** gtkgreet (inside cage)
+- **Bar:** Waybar
+- **Notifications:** Mako
+- **Launcher:** Fuzzel
+- **Lock screen:** gtklock (via swayidle)
+- **Terminal:** Alacritty + Zellij
+- **Editor:** Neovim (LSPs managed by Nix, no mason)
+- **File manager:** Thunar
+- **Browser:** Firefox
+- **Theme:** Everforest Dark + Bibata-Modern-Classic cursor
+
 ## Structure
 
 ```
@@ -13,7 +27,7 @@ Personal NixOS configuration for the `redpanda` host using flakes and Home Manag
 │       └── hardware-configuration.nix
 ├── modules/
 │   ├── system/          # core, desktop, fonts, fingerprint
-│   └── home/            # shell, terminal, editor, apps, zellij
+│   └── home/            # niri, waybar, mako, editor, shell, terminal, apps, btop, zellij
 ├── dotfiles/            # fastfetch, oh-my-posh, yazi configs
 ├── pkgs/                # python-validity custom package
 └── images/              # wallpapers and profile picture
@@ -36,15 +50,7 @@ fprintd-enroll                   # enroll from multiple angles until successful
 fprintd-verify                   # test
 ```
 
-**GNOME tweaks**
-
-- Disable PaperWM workspace indicator (requires logout):
-
-```bash
-dconf write /org/gnome/shell/extensions/paperwm/show-workspace-indicator false
-```
 **LUKS TPM 2.0 unlock enroll**
-
 
 ```bash
 sudo systemd-cryptenroll \
@@ -52,6 +58,8 @@ sudo systemd-cryptenroll \
     --tpm2-pcrs=0+7 \
     /dev/disk/by-uuid/9480f720-39f1-4bc5-9807-34f3c9ace63b
 ```
+
+**Tray icons**
 
 - Bitwarden and Signal tray icons must be enabled in each app's settings.
 

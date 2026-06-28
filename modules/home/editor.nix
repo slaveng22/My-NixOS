@@ -12,16 +12,23 @@
     extraPackages = with pkgs; [
       lua-language-server
       bash-language-server
-      vscode-langservers-extracted  # jsonls
+      vscode-langservers-extracted  # jsonls, html, cssls
       yaml-language-server
       marksman
       harper
-      # formatters
+      pyright
+      terraform-ls
+      dockerfile-language-server
+      docker-compose-language-service
+      typescript-language-server
+      # formatters / linters
       prettier
       shfmt
       terraform
       hadolint
       yamllint
+      black
+      python3Packages.flake8
     ];
 
     plugins = with pkgs.vimPlugins; [
@@ -35,6 +42,7 @@
       nvim-notify
       alpha-nvim
       nvim-web-devicons
+      which-key-nvim
       # Navigation
       fzf-lua
       nvim-tree-lua
@@ -43,13 +51,20 @@
       nvim-lspconfig
       nvim-cmp
       cmp-nvim-lsp
+      cmp-buffer
+      cmp-path
       luasnip
       # Treesitter
-      (nvim-treesitter.withPlugins (p: with p; [ bash json yaml markdown lua ]))
-      # Formatting/linting
+      (nvim-treesitter.withPlugins (p: with p; [
+        bash json yaml markdown lua
+        python typescript javascript html css dockerfile hcl
+      ]))
+      # Formatting / linting
       none-ls-nvim
       # Git
       lazygit-nvim
+      # Docker
+      lazydocker-nvim
       # Editing
       comment-nvim
       toggleterm-nvim
@@ -73,7 +88,6 @@
       opt.softtabstop = 2
       opt.expandtab = true
       opt.termguicolors = true
-      vim.opt.more = false
 
       vim.g.neovide_cursor_animation_length = 0
       vim.g.neovide_cursor_trail_length = 0
@@ -81,17 +95,15 @@
       vim.g.neovide_cursor_vfx_mode = ""
       vim.o.guifont = "JetBrainsMono Nerd Font:h14"
 
+      -- Shim for plugins still using the deprecated buf_get_clients (removed in Nvim 0.12)
+      vim.lsp.buf_get_clients = function(bufnr)
+        return vim.lsp.get_clients({ bufnr = bufnr or 0 })
+      end
+
       -- ── Autocmds ─────────────────────────────────────────────────────────
       vim.api.nvim_create_autocmd("TextYankPost", {
         callback = function()
           vim.hl.on_yank({ higroup = "IncSearch", timeout = 150 })
-        end,
-      })
-      vim.api.nvim_create_autocmd("BufEnter", {
-        callback = function()
-          if vim.bo.buftype == "terminal" then return end
-          local file = vim.api.nvim_buf_get_name(0)
-          if file ~= "" then vim.cmd("lcd " .. vim.fn.fnamemodify(file, ":h")) end
         end,
       })
       vim.api.nvim_create_autocmd("InsertEnter", { callback = function() vim.opt.relativenumber = false end })
@@ -105,49 +117,81 @@
       map("x", ">", ">gv", o)
       map("x", "<", "<gv", o)
       map("x", "p", '"_dP', o)
-      map("n", "<leader>h", "<cmd>nohlsearch<cr>", o)
-      map("n", "<leader>g", "<cmd>LazyGit<cr>", { desc = "LazyGit" })
+      map("n", "<leader>fh", "<cmd>nohlsearch<cr>",  { desc = "Clear search highlight" })
+      map("n", "<leader>g",  "<cmd>LazyGit<cr>",      { desc = "Open LazyGit" })
       map("n", "<leader>q", function()
         if vim.fn.confirm("Really quit?", "&Yes\n&No", 2) == 1 then vim.cmd("q!") end
       end, { desc = "Quit (!)" })
-      map("n", "<leader>e", "<cmd>NvimTreeToggle<cr>", { desc = "File explorer" })
-      map("n", "<leader>o", "<cmd>NvimTreeFocus<cr>",  { desc = "Focus explorer" })
-      map("n", "<S-h>", "<cmd>BufferLineCyclePrev<cr>", { desc = "Prev buffer" })
-      map("n", "<S-l>", "<cmd>BufferLineCycleNext<cr>", { desc = "Next buffer" })
-      map("n", "<leader>d", "<cmd>bdelete<cr>",         { desc = "Close buffer" })
-      map("n", "<leader>bp", "<cmd>BufferLineTogglePin<cr>", { desc = "Pin buffer" })
+      map("n", "<leader>e",  "<cmd>NvimTreeToggle<cr>",              { desc = "Toggle explorer" })
+      map("n", "<S-h>",      "<cmd>BufferLineCyclePrev<cr>",         { desc = "Prev buffer" })
+      map("n", "<S-l>",      "<cmd>BufferLineCycleNext<cr>",         { desc = "Next buffer" })
+      map("n", "<leader>bd", "<cmd>bdelete<cr>",                     { desc = "Close buffer" })
+      map("n", "<leader>bp", "<cmd>BufferLineTogglePin<cr>",         { desc = "Pin buffer" })
       map("n", "<leader>bD", "<cmd>BufferLineGroupClose ungrouped<cr>", { desc = "Close unpinned" })
-      map("t", "<C-t>", "<cmd>ToggleTerm<cr>", { desc = "Toggle terminal" })
-      map("n", "<leader>f", function() require("fzf-lua").files() end,              { desc = "Find files" })
-      map("n", "<leader>r", function() require("fzf-lua").live_grep_native() end,   { desc = "Live grep" })
-      map("n", "<leader>p", function() require("project.extensions.fzf-lua").run_fzf_lua() end, { desc = "Projects" })
+      map("t", "<C-t>",      "<cmd>ToggleTerm<cr>",                  { desc = "Toggle terminal" })
+      map("n", "<leader>ff", function() require("fzf-lua").files() end,            { desc = "Find files" })
+      map("n", "<leader>fg", function() require("fzf-lua").live_grep_native() end, { desc = "Live grep" })
+      map("n", "<leader>fp", function()
+        local projects = require("project").get_recent_projects()
+        require("fzf-lua").fzf_exec(projects, {
+          prompt = "Projects> ",
+          actions = {
+            ["default"] = function(selected)
+              if selected[1] then vim.cmd("cd " .. vim.fn.fnameescape(selected[1])) end
+            end,
+          },
+        })
+      end, { desc = "Projects" })
+      map("n", "<leader>d",  function() require("lazydocker").open() end, { desc = "Open LazyDocker" })
+      map("n", "<leader>nc", "<cmd>NoiceDismiss<cr>", { desc = "Clear notifications" })
+      map("n", "<leader>nh", "<cmd>NoiceHistory<cr>", { desc = "Notification history" })
 
       -- Smart save
+      local function is_in_pwd_and_exists(path, pwd)
+        if not path or path == "" then return false end
+        local abs = vim.fn.fnamemodify(path, ":p")
+        local cwd = vim.fn.fnamemodify(pwd, ":p")
+        if cwd:sub(-1) ~= "/" then cwd = cwd .. "/" end
+        return abs:sub(1, #cwd) == cwd and vim.fn.filereadable(abs) == 1
+      end
+      local function resolve_path_in_pwd(input, pwd)
+        local is_abs = input:sub(1, 1) == "/" or input:sub(1, 1) == "~" or input:match("^%a:[/\\]") ~= nil
+        return is_abs and input or (pwd .. "/" .. input)
+      end
+      local function prompt_save_into_pwd()
+        local cwd = vim.fn.getcwd()
+        local default = ""
+        local cur = vim.api.nvim_buf_get_name(0)
+        if cur ~= "" then default = vim.fn.fnamemodify(cur, ":t") end
+        local input = vim.fn.input("Save as (relative to pwd: " .. cwd .. "): ", default, "file")
+        if input == "" then return false end
+        local path = resolve_path_in_pwd(input, cwd)
+        local dir = vim.fn.fnamemodify(path, ":h")
+        if dir ~= "" and vim.fn.isdirectory(dir) == 0 then vim.fn.mkdir(dir, "p") end
+        vim.cmd("saveas! " .. vim.fn.fnameescape(path))
+        return true
+      end
       local function smart_write()
         local bufname = vim.api.nvim_buf_get_name(0)
-        local cwd = vim.fn.getcwd()
-        local abs = vim.fn.fnamemodify(bufname, ":p")
-        local cwd_slash = cwd:sub(-1) ~= "/" and cwd .. "/" or cwd
-        if bufname ~= "" and abs:sub(1, #cwd_slash) == cwd_slash and vim.fn.filereadable(abs) == 1 then
+        if is_in_pwd_and_exists(bufname, vim.fn.getcwd()) then
           vim.cmd("write")
         else
-          local input = vim.fn.input("Save as: ", vim.fn.fnamemodify(bufname, ":t"), "file")
-          if input ~= "" then
-            local path = input:sub(1,1) == "/" and input or (cwd .. "/" .. input)
-            vim.fn.mkdir(vim.fn.fnamemodify(path, ":h"), "p")
-            vim.cmd("saveas! " .. vim.fn.fnameescape(path))
-          end
+          prompt_save_into_pwd()
         end
       end
-      map("n", "<leader>w", smart_write, { desc = "Smart write" })
-      map("n", "<leader>x", function() smart_write() vim.cmd("bd") end, { desc = "Write and close" })
+      map("n", "<leader>w", smart_write,                                  { desc = "Write or Save As into pwd" })
+      map("n", "<leader>x", function() smart_write() vim.cmd("bd") end,   { desc = "Write/Save As then quit" })
 
       -- ── Colorscheme ──────────────────────────────────────────────────────
       vim.g.everforest_background = "medium"
-      vim.g.neovide_opacity = 0.95
       vim.cmd.colorscheme("everforest")
-      vim.api.nvim_set_hl(0, "NotifyBackground", { bg = "#2d353b" })
-      require("notify").setup({ background_colour = "#2d353b" })
+
+      -- ── Notify ───────────────────────────────────────────────────────────
+      local ok_notify, notify = pcall(require, "notify")
+      if ok_notify then
+        notify.setup({ max_width = 60, max_height = 8 })
+        vim.notify = notify
+      end
 
       -- ── Lualine ──────────────────────────────────────────────────────────
       require("lualine").setup({
@@ -180,7 +224,7 @@
           enabled = true,
           view = "cmdline_popup",
           format = {
-            cmdline    = { pattern = "^:", icon = "", lang = "vim" },
+            cmdline     = { pattern = "^:", icon = "", lang = "vim" },
             search_down = { kind = "search", pattern = "^/", icon = " ", lang = "regex" },
             search_up   = { kind = "search", pattern = "^%?", icon = " ", lang = "regex" },
           },
@@ -194,7 +238,29 @@
         },
         presets = { long_message_to_split = true, lsp_doc_border = true },
       })
--- ── Dashboard ────────────────────────────────────────────────────────
+
+      -- ── Which-key ────────────────────────────────────────────────────────
+      local wk = require("which-key")
+      wk.setup({ preset = "helix" })
+      wk.add({
+        { "<leader>w",  icon = "󰆓" },
+        { "<leader>x",  icon = "󰽃" },
+        { "<leader>g",  icon = "󰊢" },
+        { "<leader>d",  icon = "󰡨" },
+        { "<leader>q",  icon = "󰩈" },
+        { "<leader>e",  icon = "󰝰" },
+        { "<leader>?",  icon = "󰋗" },
+        { "<leader>f",  group = "Find",          icon = "󰍉" },
+        { "<leader>ff", icon = "󰍉" },
+        { "<leader>fg", icon = "󰈞" },
+        { "<leader>fp", icon = "󰔠" },
+        { "<leader>fh", icon = "󰸱" },
+        { "<leader>b",  group = "Buffers",       icon = "󰈚" },
+        { "<leader>c",  group = "Code",          icon = "" },
+        { "<leader>n",  group = "Notifications", icon = "󰵙" },
+      })
+
+      -- ── Dashboard ────────────────────────────────────────────────────────
       local alpha = require("alpha")
       local dashboard = require("alpha.themes.dashboard")
       dashboard.section.header.val = {
@@ -209,12 +275,13 @@
       dashboard.section.buttons.val = {
         dashboard.button("e", "  New file",    ":ene | startinsert<CR>"),
         dashboard.button("f", "  Open file",   ":lua require('fzf-lua').files()<CR>"),
+        dashboard.button("o", "󰝰  Open folder", ":lua require('fzf-lua').fzf_exec('fd --type d . ' .. vim.env.HOME, { prompt = 'Folder> ', actions = { ['default'] = function(s) if s and s[1] then require('fzf-lua').files({ cwd = s[1] }) end end } })<CR>"),
         dashboard.button("g", "󰈞  Live grep",   ":lua require('fzf-lua').live_grep_native()<CR>"),
-        dashboard.button("p", "󰔠  Projects",    ":lua require('project.extensions.fzf-lua').run_fzf_lua()<CR>"),
+        dashboard.button("p", "󰔠  Projects",    ":lua local p=require('project').get_recent_projects(); require('fzf-lua').fzf_exec(p,{prompt='Projects> ',actions={['default']=function(s) if s[1] then vim.cmd('cd '..vim.fn.fnameescape(s[1])) end end}})<CR>"),
         dashboard.button("q", "󰩈  Quit",        ":qa<CR>"),
       }
       require("project").setup({
-        lsp = { enabled = false },
+        use_lsp = false,
         patterns = { ".git" },
         show_hidden = false,
         silent_chdir = true,
@@ -224,9 +291,6 @@
       -- ── FZF-lua ──────────────────────────────────────────────────────────
       require("fzf-lua").setup({})
 
-      -- ── LazyGit ──────────────────────────────────────────────────────────
-      -- (keymaps already set above)
-
       -- ── Comment ──────────────────────────────────────────────────────────
       require("Comment").setup({})
 
@@ -235,11 +299,18 @@
       capabilities = require("cmp_nvim_lsp").default_capabilities(capabilities)
 
       local servers = {
-        lua_ls = { settings = { Lua = { diagnostics = { globals = { "vim" } } } } },
-        bashls = {},
-        jsonls = {},
-        yamlls = {},
-        marksman = {},
+        lua_ls    = { settings = { Lua = { diagnostics = { globals = { "vim" } } } } },
+        bashls    = {},
+        jsonls    = {},
+        yamlls    = {},
+        dockerls  = {},
+        docker_compose_language_service = {},
+        terraformls = {},
+        pyright   = {},
+        html      = {},
+        cssls     = {},
+        ts_ls     = {},
+        marksman  = {},
         harper_ls = {
           settings = {
             ["harper-ls"] = { userDictPath = vim.fn.stdpath("data") .. "/harper/user_dict.txt" },
@@ -260,7 +331,7 @@
           m("gd",         vim.lsp.buf.definition,   "Go to definition")
           m("K",          vim.lsp.buf.hover,         "Hover docs")
           m("<leader>ca", vim.lsp.buf.code_action,   "Code action")
-          m("<leader>rn", vim.lsp.buf.rename,        "Rename")
+          m("<leader>cr", vim.lsp.buf.rename,        "Rename symbol")
           m("[d",         vim.diagnostic.goto_prev,  "Prev diagnostic")
           m("]d",         vim.diagnostic.goto_next,  "Next diagnostic")
           m("<leader>cd", vim.diagnostic.open_float, "Show diagnostic")
@@ -276,7 +347,11 @@
           ["<Tab>"]   = cmp.mapping.select_next_item(),
           ["<S-Tab>"] = cmp.mapping.select_prev_item(),
         }),
-        sources = { { name = "nvim_lsp" } },
+        sources = {
+          { name = "nvim_lsp" },
+          { name = "buffer", keyword_length = 3 },
+          { name = "path" },
+        },
       })
 
       -- ── Treesitter ───────────────────────────────────────────────────────
@@ -287,10 +362,12 @@
 
       -- ── Formatting ───────────────────────────────────────────────────────
       local null_ls = require("null-ls")
+      local lsp_fmt_group = vim.api.nvim_create_augroup("LspFormatting", { clear = true })
       null_ls.setup({
         sources = {
+          null_ls.builtins.formatting.black,
           null_ls.builtins.formatting.prettier.with({
-            filetypes = { "javascript", "json", "yaml", "markdown" },
+            filetypes = { "html", "css", "javascript", "json", "yaml", "markdown" },
           }),
           null_ls.builtins.formatting.shfmt,
           null_ls.builtins.formatting.terraform_fmt,
@@ -299,8 +376,9 @@
         },
         on_attach = function(client, bufnr)
           if client.supports_method("textDocument/formatting") then
+            vim.api.nvim_clear_autocmds({ group = lsp_fmt_group, buffer = bufnr })
             vim.api.nvim_create_autocmd("BufWritePre", {
-              group = vim.api.nvim_create_augroup("LspFormatting", { clear = true }),
+              group = lsp_fmt_group,
               buffer = bufnr,
               callback = function()
                 vim.lsp.buf.format({ bufnr = bufnr, timeout_ms = 2000 })
@@ -316,7 +394,7 @@
           local api = require("nvim-tree.api")
           api.config.mappings.default_on_attach(bufnr)
           local o2 = { buffer = bufnr, noremap = true, silent = true, nowait = true }
-          vim.keymap.set("n", "l", api.node.open.edit,           o2)
+          vim.keymap.set("n", "l", api.node.open.edit,             o2)
           vim.keymap.set("n", "h", api.node.navigate.parent_close, o2)
         end,
         disable_netrw = true,
@@ -329,6 +407,9 @@
         filters = { dotfiles = false },
         git = { enable = true, ignore = false },
       })
+
+      -- ── LazyDocker ───────────────────────────────────────────────────────
+      require("lazydocker").setup({ floating_window = true })
 
       -- ── Cheatsheet ───────────────────────────────────────────────────────
       local cheatsheet = (function()
@@ -350,7 +431,7 @@ di"va"p   — for double quotes
   va'  → select around single quotes (including quotes)
   p    → paste word over selection (replaces quotes + word)]] },
           { title = "Project-wide find & replace", body = [[
-1. <leader>sg / <leader>sG  — grep (root / cwd)
+1. <leader>fg  — live grep
 2. Find the text, press CTRL+q  → send to quickfix
 3. Run: :cfdo %s/old/new/gc | update
 

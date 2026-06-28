@@ -10,10 +10,7 @@ let
     export XCURSOR_PATH="${pkgs.bibata-cursors}/share/icons"
     exec ${pkgs.cage}/bin/cage -s -- ${pkgs.gtkgreet}/bin/gtkgreet \
       -b ${../../images/backgrounds/nixos-corner.png} \
-      -c "${pkgs.niri}/bin/niri --session" \
-      --power-shutdown "systemctl poweroff" \
-      --power-reboot "systemctl reboot" \
-      --power-suspend "systemctl suspend"
+      -c "${pkgs.niri}/bin/niri --session"
   '';
 in {
   programs.niri.enable = true;
@@ -75,20 +72,30 @@ in {
   };
 
   services.upower.enable = true;
+  services.gvfs.enable = true;
 
   programs.firefox.enable = true;
 
+  programs.thunar = {
+    enable = true;
+    plugins = with pkgs.xfce; [ thunar-archive-plugin ];
+  };
+
   environment.systemPackages = with pkgs; [
+    file-roller
     everforest-gtk-theme
     wlogout
     networkmanagerapplet
     fuzzel
     gtklock
+    gtklock-userinfo-module
+    gtklock-powerbar-module
     swayidle
     grim
     slurp
     swappy
     cliphist
+    wf-recorder
     brightnessctl
     polkit_gnome
   ];

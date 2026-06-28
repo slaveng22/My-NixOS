@@ -23,6 +23,19 @@ in {
     };
   };
 
+  systemd.services.fingerprint-resume = {
+    description = "Restart fingerprint services after resume from sleep";
+    wantedBy = [ "post-resume.target" ];
+    after = [ "post-resume.target" ];
+    script = ''
+      systemctl restart python3-validity
+      systemctl restart open-fprintd
+    '';
+    serviceConfig = {
+      Type = "oneshot";
+    };
+  };
+
   security.pam.services = {
     sudo.fprintAuth = true;
     gnome-screensaver.fprintAuth = true;
