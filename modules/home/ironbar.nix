@@ -4,27 +4,28 @@
   home.packages = [ pkgs.ironbar ];
 
   xdg.configFile."ironbar/config.toml".text = ''
+    [bar]
     position = "top"
     height = 32
     anchor_to_edges = true
 
-    [[start]]
+    [[bar.start]]
     type = "workspaces"
 
-    [[center]]
+    [[bar.center]]
     type = "focused"
     show_title = false
 
-    [[end]]
+    [[bar.end]]
     type = "tray"
 
-    [[end]]
+    [[bar.end]]
     type = "volume"
 
-    [[end]]
+    [[bar.end]]
     type = "battery"
 
-    [[end]]
+    [[bar.end]]
     type = "clock"
     format = " %H:%M"
   '';

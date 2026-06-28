@@ -9,7 +9,7 @@
     ./zellij.nix
     ./btop.nix
     ./niri.nix
-    ./ironbar.nix
+    ./waybar.nix
     ./mako.nix
   ];
 

@@ -17,6 +17,14 @@
     };
   };
 
+  programs.fuzzel = {
+    enable = true;
+    settings = {
+      border = { width = 2; };
+      colors = { border = "00ff00ff"; selection = "00ff0040"; };
+    };
+  };
+
   programs.git = {
     enable = true;
     settings = {
@@ -35,6 +43,7 @@
   xdg.configFile."yazi/theme.toml".source = ../../dotfiles/yazi/theme.toml;
 
   home.packages = with pkgs; [
+    libnotify
     unstable.obsidian
     (pkgs.symlinkJoin {
       name = "signal-desktop";
@@ -52,5 +61,8 @@
     yazi
     pkgs.xfce.thunar
     claude-code
+    bemoji
+    imv
+    zathura
   ];
 }

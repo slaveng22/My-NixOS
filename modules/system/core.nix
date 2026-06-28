@@ -40,6 +40,10 @@
       PCIE_ASPM_ON_BAT = "powersave";
       NMI_WATCHDOG = 0;
       WIFI_PWR_ON_BAT = "on";
+      # Battery charge thresholds — intentional, extends battery lifespan by
+      # avoiding full charges. Laptop is mostly used plugged in.
+      START_CHARGE_THRESH_BAT0 = 75;
+      STOP_CHARGE_THRESH_BAT0 = 80;
     };
   };
   services.power-profiles-daemon.enable = false;

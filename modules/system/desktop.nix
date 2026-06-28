@@ -8,11 +8,19 @@ let
     export XCURSOR_THEME="Bibata-Modern-Classic"
     export XCURSOR_SIZE="24"
     export XCURSOR_PATH="${pkgs.bibata-cursors}/share/icons"
-    exec ${pkgs.cage}/bin/cage -s -- ${pkgs.gtkgreet}/bin/gtkgreet -c "${pkgs.niri}/bin/niri --session"
+    exec ${pkgs.cage}/bin/cage -s -- ${pkgs.gtkgreet}/bin/gtkgreet \
+      -b ${../../images/backgrounds/nixos-corner.png} \
+      -c "${pkgs.niri}/bin/niri --session" \
+      --power-shutdown "systemctl poweroff" \
+      --power-reboot "systemctl reboot" \
+      --power-suspend "systemctl suspend"
   '';
 in {
   programs.niri.enable = true;
   programs.xwayland.enable = true;
+
+  hardware.bluetooth.enable = true;
+  services.blueman.enable = true;
 
   systemd.tmpfiles.rules = [
     "d /var/lib/greeter 0700 greeter greeter -"
@@ -32,6 +40,21 @@ in {
 
   security.pam.services.gtklock = { };
   security.polkit.enable = true;
+  security.polkit.extraConfig = ''
+    polkit.addRule(function(action, subject) {
+      if (
+        subject.user === "greeter" &&
+        (
+          action.id === "org.freedesktop.login1.power-off" ||
+          action.id === "org.freedesktop.login1.reboot" ||
+          action.id === "org.freedesktop.login1.suspend" ||
+          action.id === "org.freedesktop.login1.hibernate"
+        )
+      ) {
+        return polkit.Result.YES;
+      }
+    });
+  '';
 
   xdg.portal = {
     enable = true;

@@ -1,8 +1,6 @@
 # TODO
 
-- [ ] emoji manager
-- [ ] bluetooth
-- [ ] file manager
-- [ ] auto-open
-- [ ] automove windows
-- [ ] Wallpaper
+- bar
+- fingerpint doesn't work after sleep
+- Neovim
+- gtklock addins
