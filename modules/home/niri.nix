@@ -220,6 +220,16 @@ in {
       open-floating true
     }
 
+    window-rule {
+      match app-id=r#"firefox"#
+      open-fullscreen false
+    }
+
+    window-rule {
+      match app-id=r#"^(libreoffice|soffice).*"#
+      open-fullscreen false
+    }
+
 
 
 
