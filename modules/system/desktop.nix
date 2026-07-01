@@ -85,7 +85,7 @@ in {
     file-roller
     everforest-gtk-theme
     wlogout
-    networkmanagerapplet
+    bluetuith
     fuzzel
     gtklock
     gtklock-userinfo-module

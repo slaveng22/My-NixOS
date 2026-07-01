@@ -203,12 +203,10 @@ in {
     spawn-at-startup "${pkgs.gnome-keyring}/bin/gnome-keyring-daemon" "--start" "--components=secrets"
     spawn-at-startup "${pkgs.mako}/bin/mako"
     spawn-at-startup "${pkgs.waybar}/bin/waybar"
-    spawn-at-startup "${pkgs.networkmanagerapplet}/bin/nm-applet" "--indicator"
     spawn-at-startup "sh" "-c" "signal-desktop --start-in-tray"
     spawn-at-startup "${pkgs.swayidle}/bin/swayidle" "-w" "timeout" "600" "${pkgs.gtklock}/bin/gtklock" "timeout" "1200" "niri msg action power-off-monitors" "timeout" "1800" "systemctl suspend" "before-sleep" "${pkgs.gtklock}/bin/gtklock"
     spawn-at-startup "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1"
     spawn-at-startup "${pkgs.wl-clipboard}/bin/wl-paste" "--watch" "${pkgs.cliphist}/bin/cliphist" "store"
-    spawn-at-startup "${pkgs.blueman}/bin/blueman-applet"
     spawn-at-startup "${pkgs.swaybg}/bin/swaybg" "-i" "${../../images/backgrounds/sesija-jezero.jpg}" "-m" "fill"
     window-rule {
       geometry-corner-radius 12
@@ -218,6 +216,28 @@ in {
     window-rule {
       match app-id="swappy"
       open-floating true
+    }
+
+    window-rule {
+      match title="pulsemixer"
+      open-floating true
+    }
+
+    window-rule {
+      match title="nmtui"
+      open-floating true
+    }
+
+    window-rule {
+      match title="calcurse"
+      open-floating true
+    }
+
+    window-rule {
+      match title="bluetuith"
+      open-floating true
+      min-width 1400
+      default-floating-position x=-350 y=50 relative-to="top"
     }
 
     window-rule {

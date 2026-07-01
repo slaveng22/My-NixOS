@@ -16,7 +16,7 @@ let
 in
 
 {
-  home.packages = [ pkgs.playerctl nix-sysinfo ];
+  home.packages = [ pkgs.playerctl pkgs.calcurse nix-sysinfo ];
 
   programs.waybar = {
     enable = true;
@@ -32,7 +32,7 @@ in
 
       modules-left = [ "custom/nix" "niri/workspaces" ];
       modules-center = [ "mpris" ];
-      modules-right = [ "tray" "pulseaudio" "battery" "clock" "custom/power" ];
+      modules-right = [ "tray" "bluetooth" "network" "pulseaudio" "battery" "custom/power" "clock" ];
 
       "custom/nix" = {
         exec = "${nix-sysinfo}/bin/nix-sysinfo";
@@ -65,27 +65,60 @@ in
         spacing = 8;
       };
 
+      bluetooth = {
+        format = "󰂯";
+        format-connected = "󰂱";
+        format-disabled = "󰂲";
+        tooltip-format = "Bluetooth off";
+        tooltip-format-connected = "{device_alias}\n{device_battery_percentage}%";
+        tooltip-format-enumerate-connected = "{device_alias}";
+        on-click = "bluetoothctl power $(bluetoothctl show | grep -q 'Powered: yes' && echo off || echo on)";
+        on-click-right = "${pkgs.alacritty}/bin/alacritty -T bluetuith -e ${pkgs.bluetuith}/bin/bluetuith";
+      };
+
+      network = {
+        format-wifi = "{icon}";
+        format-ethernet = "󰈀";
+        format-disconnected = "󰖪";
+        format-icons = [ "󰤯" "󰤟" "󰤢" "󰤥" "󰤨" ];
+        tooltip-format-wifi = "{essid}\n{ipaddr}\nSignal: {signalStrength}%";
+        tooltip-format-ethernet = "{ifname}: {ipaddr}";
+        tooltip-format-disconnected = "Disconnected";
+        on-click-right = "${pkgs.alacritty}/bin/alacritty -T nmtui -e nmtui";
+      };
+
       pulseaudio = {
-        format = "{icon} {volume}%";
-        format-muted = "󰝟 muted";
+        format = "{icon}";
+        format-muted = "󰝟";
         format-icons = {
           default = [ "󰕿" "󰖀" "󰕾" ];
         };
+        tooltip-format = "{volume}%\n{desc}";
         on-click = "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle";
+        on-click-right = "${pkgs.alacritty}/bin/alacritty -T pulsemixer -e ${pkgs.pulsemixer}/bin/pulsemixer";
       };
 
       battery = {
         bat = "BAT0";
-        format = "{icon} {capacity}%";
-        format-charging = "󰂄 {capacity}%";
-        format-plugged = "󰚥 {capacity}%";
-        format-icons = [ "󰁺" "󰁻" "󰁼" "󰁽" "󰁾" "󰁿" "󰂀" "󰂁" "󰂂" "󰁹" ];
-        states = { warning = 20; critical = 10; };
+        states = { critical = 5; low = 30; medium = 60; };
+        format = "󱊣";
+        format-medium = "󱊢";
+        format-low = "󱊡";
+        format-critical = "󰂎";
+        format-charging = "󱊦";
+        format-charging-medium = "󱊥";
+        format-charging-low = "󱊤";
+        format-charging-critical = "󰢟";
+        format-plugged = "󱊦";
+        tooltip-format = "{capacity}%\n{timeTo}";
+        tooltip-format-charging = "{capacity}%\n{timeTo}";
+        tooltip-format-plugged = "{capacity}%\nPlugged in";
       };
 
       clock = {
         format = " {:%H:%M}";
         tooltip-format = "<big>{:%A, %d %B %Y}</big>\n<tt>{calendar}</tt>";
+        on-click-right = "${pkgs.alacritty}/bin/alacritty -T calcurse -e ${pkgs.calcurse}/bin/calcurse";
       };
 
       "custom/power" = {
@@ -163,15 +196,15 @@ in
         margin: 4px 4px;
       }
 
-      #battery.charging {
+      #battery.charging, #battery.plugged {
         color: #a7c080;
       }
 
-      #battery.warning:not(.charging) {
-        color: #e69875;
+      #battery.low:not(.charging):not(.plugged) {
+        color: #e6d890;
       }
 
-      #battery.critical:not(.charging) {
+      #battery.critical:not(.charging):not(.plugged) {
         color: #e67e80;
         animation: blink 1s ease-in-out infinite alternate;
       }
@@ -179,6 +212,22 @@ in
       @keyframes blink {
         from { opacity: 1; }
         to { opacity: 0.2; }
+      }
+
+      #bluetooth {
+        color: #7fbbb3;
+        padding: 0 8px;
+        margin: 4px 4px;
+      }
+
+      #bluetooth.disabled {
+        color: #7a8478;
+      }
+
+      #network {
+        color: #83c092;
+        padding: 0 8px;
+        margin: 4px 4px;
       }
 
       #pulseaudio {
