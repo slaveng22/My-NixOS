@@ -1,7 +1,7 @@
 { pkgs, ... }:
 
 let
-  nix-sysinfo = pkgs.writeShellScriptBin "nix-sysinfo" ''
+nix-sysinfo = pkgs.writeShellScriptBin "nix-sysinfo" ''
     host=$(${pkgs.coreutils}/bin/uname -n)
     kernel=$(${pkgs.coreutils}/bin/uname -r)
     uptime=$(${pkgs.procps}/bin/uptime -p | ${pkgs.gnused}/bin/sed 's/up //')
@@ -16,7 +16,14 @@ let
 in
 
 {
-  home.packages = [ pkgs.playerctl pkgs.calcurse nix-sysinfo ];
+  home.packages = [ pkgs.calcure nix-sysinfo ];
+
+  xdg.configFile."calcure/config.ini".text = ''
+    [Colors]
+    color_background = -1
+    color_separator = 0
+    color_calendar_border = 0
+  '';
 
   programs.waybar = {
     enable = true;
@@ -31,7 +38,7 @@ in
       margin-right = 8;
 
       modules-left = [ "custom/nix" "niri/workspaces" ];
-      modules-center = [ "mpris" ];
+      modules-center = [ "niri/window" ];
       modules-right = [ "tray" "bluetooth" "network" "pulseaudio" "battery" "custom/power" "clock" ];
 
       "custom/nix" = {
@@ -45,23 +52,14 @@ in
         format = "{value}";
       };
 
-      mpris = {
-        format = "{player_icon} {status_icon} {title}";
-        player-icons = {
-          default = "";
-          spotify = "";
-          firefox = "󰈹";
-          chromium = "";
+      "niri/window" = {
+        format = "{title}";
+        rewrite = {
+          "(.*) — Mozilla Firefox" = " $1";
         };
-        status-icons = {
-          playing = "▶";
-          paused = "⏸";
-        };
-        max-length = 50;
-        on-click = "playerctl play-pause";
       };
 
-      tray = {
+tray = {
         spacing = 8;
       };
 
@@ -118,7 +116,7 @@ in
       clock = {
         format = " {:%H:%M}";
         tooltip-format = "<big>{:%A, %d %B %Y}</big>\n<tt>{calendar}</tt>";
-        on-click-right = "${pkgs.alacritty}/bin/alacritty -T calcurse -e ${pkgs.calcurse}/bin/calcurse";
+        on-click-right = "${pkgs.alacritty}/bin/alacritty -T calcure -e ${pkgs.calcure}/bin/calcure";
       };
 
       "custom/power" = {
@@ -157,37 +155,39 @@ in
       }
 
       #workspaces button {
-        color: #7a8478;
-        padding: 2px 10px;
+        color: rgba(122, 132, 120, 0.7);
+        padding: 4px 10px;
         background: transparent;
-        border: 1px solid transparent;
-        border-radius: 6px;
+        border: 1px solid rgba(122, 132, 120, 0.25);
+        border-radius: 4px;
+        margin: 4px 2px;
         box-shadow: none;
+        transition: all 0.15s ease;
       }
 
       #workspaces button.active {
         color: #a7c080;
         background: rgba(167, 192, 128, 0.15);
-        border: 1px solid #a7c080;
-        border-radius: 6px;
+        border: 1px solid rgba(167, 192, 128, 0.6);
+        border-radius: 4px;
       }
 
       #workspaces button:hover {
         color: #d3c6aa;
-        background: #3d484d;
-        border-bottom: 2px solid transparent;
+        background: rgba(211, 198, 170, 0.08);
+        border: 1px solid rgba(211, 198, 170, 0.3);
       }
 
-      #mpris {
-        color: #a7c080;
-        padding: 0 8px;
+#window {
+        color: #d3c6aa;
+        padding: 0 12px;
       }
 
       #clock {
         color: #7fbbb3;
         font-weight: bold;
         padding: 0 10px;
-        margin: 4px 4px;
+        margin: 4px 12px 4px 4px;
       }
 
       #battery {
@@ -248,7 +248,7 @@ in
       #custom-power {
         color: #e67e80;
         padding: 0 10px;
-        margin: 4px 12px 4px 4px;
+        margin: 4px 4px;
       }
 
       #custom-power:hover {

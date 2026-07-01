@@ -1,7 +1,7 @@
 { pkgs, ... }:
 
 let
-  screenshot-area = pkgs.writeShellScriptBin "screenshot-area" ''
+screenshot-area = pkgs.writeShellScriptBin "screenshot-area" ''
     ${pkgs.grim}/bin/grim -g "$(${pkgs.slurp}/bin/slurp)" - | ${pkgs.swappy}/bin/swappy -f -
   '';
   cliphist-pick = pkgs.writeShellScriptBin "cliphist-pick" ''
@@ -229,7 +229,7 @@ in {
     }
 
     window-rule {
-      match title="calcurse"
+      match title="calcure"
       open-floating true
     }
 
