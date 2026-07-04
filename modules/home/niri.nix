@@ -192,8 +192,10 @@ in {
       skip-at-startup
     }
 
-    overview {
-      open-on-hot-corner false
+    gestures {
+      hot-corners {
+        off
+      }
     }
 
     cursor {
