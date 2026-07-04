@@ -17,7 +17,10 @@
     width=320
 
     [urgency=low]
-    border-color=#7fbbb3
+    border-color=#a7c080
+
+    [urgency=normal]
+    border-color=#dbbc7f
 
     [urgency=high]
     border-color=#e67e80

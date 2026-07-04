@@ -11,8 +11,41 @@ nix-sysinfo = pkgs.writeShellScriptBin "nix-sysinfo" ''
     ${pkgs.jq}/bin/jq -cn \
       --arg host "$host" --arg cpu "$cpu" --arg kernel "$kernel" \
       --arg uptime "$uptime" --arg mem "$mem" --arg disk "$disk" \
-      '{"text":"󱄅","tooltip":"\($host)\nCPU: \($cpu)\nKernel: \($kernel)\nUptime: \($uptime)\nRAM: \($mem)\nDisk: \($disk)"}'
+      '{"text":" 󱄅 ","tooltip":"\($host)\nCPU: \($cpu)\nKernel: \($kernel)\nUptime: \($uptime)\nRAM: \($mem)\nDisk: \($disk)"}'
   '';
+
+python-astral = pkgs.python3.withPackages (ps: [ ps.astral ]);
+
+nightlight-status = pkgs.writeShellScriptBin "nightlight-status" ''
+  if ${pkgs.procps}/bin/pgrep -x wlsunset > /dev/null; then
+    IS_NIGHT=$(${python-astral}/bin/python3 -c "
+from astral import LocationInfo
+from astral.sun import sun
+import datetime
+from zoneinfo import ZoneInfo
+city = LocationInfo('Belgrade', 'Serbia', 'Europe/Belgrade', 44.8167, 20.4667)
+s = sun(city.observer, date=datetime.date.today(), tzinfo=ZoneInfo('Europe/Belgrade'))
+now = datetime.datetime.now(ZoneInfo('Europe/Belgrade'))
+print('yes' if now < s['sunrise'] or now > s['sunset'] else 'no')
+")
+    if [ "$IS_NIGHT" = yes ]; then
+      echo '{"text":"󰖔","class":"night","tooltip":"Night light on"}'
+    else
+      echo '{"text":"󰖙","class":"day","tooltip":"Night light on"}'
+    fi
+  else
+    echo '{"text":"󰖙","class":"day","tooltip":"Night light off (manual)"}'
+  fi
+'';
+
+nightlight-toggle = pkgs.writeShellScriptBin "nightlight-toggle" ''
+  if ${pkgs.procps}/bin/pgrep -x wlsunset > /dev/null; then
+    ${pkgs.systemd}/bin/systemctl --user stop wlsunset
+  else
+    ${pkgs.systemd}/bin/systemctl --user start wlsunset
+  fi
+  ${pkgs.procps}/bin/pkill -RTMIN+9 waybar
+'';
 in
 
 {
@@ -39,13 +72,14 @@ in
 
       modules-left = [ "custom/nix" "niri/workspaces" ];
       modules-center = [ "niri/window" ];
-      modules-right = [ "tray" "bluetooth" "network" "pulseaudio" "battery" "custom/power" "clock" ];
+      modules-right = [ "tray" "custom/nightlight" "bluetooth" "network" "pulseaudio" "battery" "custom/power" "clock" ];
 
       "custom/nix" = {
         exec = "${nix-sysinfo}/bin/nix-sysinfo";
         return-type = "json";
         interval = 30;
         format = "{}";
+        on-click = "${pkgs.niri}/bin/niri msg action toggle-overview";
       };
 
       "niri/workspaces" = {
@@ -63,14 +97,24 @@ tray = {
         spacing = 8;
       };
 
+      "custom/nightlight" = {
+        exec = "${nightlight-status}/bin/nightlight-status";
+        return-type = "json";
+        interval = 60;
+        on-click = "${nightlight-toggle}/bin/nightlight-toggle";
+        signal = 9;
+      };
+
       bluetooth = {
         format = "󰂯";
         format-connected = "󰂱";
         format-disabled = "󰂲";
-        tooltip-format = "Bluetooth off";
+        format-disconnected = "󰂯";
+        tooltip-format = "Bluetooth on";
+        tooltip-format-disconnected = "Bluetooth on";
         tooltip-format-connected = "{device_alias}\n{device_battery_percentage}%";
         tooltip-format-enumerate-connected = "{device_alias}";
-        on-click = "bluetoothctl power $(bluetoothctl show | grep -q 'Powered: yes' && echo off || echo on)";
+        on-click = "${pkgs.bluez}/bin/bluetoothctl power $(${pkgs.bluez}/bin/bluetoothctl show | grep -q 'Powered: yes' && echo off || echo on)";
         on-click-right = "${pkgs.alacritty}/bin/alacritty -T bluetuith -e ${pkgs.bluetuith}/bin/bluetuith";
       };
 
@@ -224,6 +268,10 @@ tray = {
         color: #7a8478;
       }
 
+      #bluetooth.disconnected {
+        color: #7fbbb3;
+      }
+
       #network {
         color: #83c092;
         padding: 0 8px;
@@ -254,6 +302,33 @@ tray = {
       #custom-power:hover {
         background: #3d484d;
       }
+
+      #custom-nightlight {
+        padding: 0 8px;
+        margin: 4px 4px;
+        font-size: 15px;
+      }
+
+      #custom-nightlight.day {
+        color: #dbbc7f;
+      }
+
+      #custom-nightlight.night {
+        color: #7a8478;
+      }
     '';
+  };
+
+  systemd.user.services.wlsunset = {
+    Unit = {
+      Description = "Night light";
+      PartOf = [ "graphical-session.target" ];
+      After = [ "graphical-session.target" ];
+    };
+    Install.WantedBy = [ "graphical-session.target" ];
+    Service = {
+      ExecStart = "${pkgs.wlsunset}/bin/wlsunset -l 44.8 -L 20.5";
+      Restart = "on-failure";
+    };
   };
 }
