@@ -1,6 +1,8 @@
 { pkgs, ... }:
 
 let
+  notifySend = "${pkgs.libnotify}/bin/notify-send";
+
   batteryScript = pkgs.writeShellScript "battery-notify" ''
     BAT=$(cat /sys/class/power_supply/BAT0/capacity 2>/dev/null || cat /sys/class/power_supply/BAT1/capacity 2>/dev/null)
     STATUS=$(cat /sys/class/power_supply/BAT0/status 2>/dev/null || cat /sys/class/power_supply/BAT1/status 2>/dev/null)
@@ -9,9 +11,9 @@ let
     [ "$STATUS" = "Charging" ] && exit 0
 
     if [ "$BAT" -le 5 ]; then
-      notify-send -u critical "Battery Critical" "Battery at ''${BAT}% — plug in now!"
+      ${notifySend} -u critical "Battery Critical" "Battery at ''${BAT}% — plug in now!"
     elif [ "$BAT" -le 15 ]; then
-      notify-send -u normal "Battery Low" "Battery at ''${BAT}%"
+      ${notifySend} -u normal "Battery Low" "Battery at ''${BAT}%"
     fi
   '';
 in

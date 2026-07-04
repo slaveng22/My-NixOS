@@ -192,6 +192,10 @@ in {
       skip-at-startup
     }
 
+    overview {
+      open-on-hot-corner false
+    }
+
     cursor {
       xcursor-theme "Bibata-Modern-Classic"
       xcursor-size 24
