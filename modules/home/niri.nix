@@ -186,6 +186,7 @@ in {
       QT_QPA_PLATFORM "wayland"
       QT_WAYLAND_DISABLE_WINDOWDECORATION "1"
       XDG_CURRENT_DESKTOP "niri"
+      LIBVA_DRIVER_NAME "iHD"
     }
 
     hotkey-overlay {
@@ -334,6 +335,8 @@ in {
       Mod+Shift+P { power-off-monitors; }
     }
   '';
+
+  services.poweralertd.enable = true;
 
   home.file.".face".source = ../../images/profile/redpanda.png;
 

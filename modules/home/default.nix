@@ -11,7 +11,6 @@
     ./niri.nix
     ./waybar.nix
     ./mako.nix
-    ./battery-notify.nix
   ];
 
   home.username = "slaven";

@@ -21,6 +21,7 @@
 
     [urgency=normal]
     border-color=#dbbc7f
+    default-timeout=5000
 
     [urgency=high]
     border-color=#e67e80

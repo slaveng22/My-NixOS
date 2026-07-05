@@ -71,10 +71,25 @@ in {
     pulse.enable = true;
   };
 
-  services.upower.enable = true;
+  services.upower = {
+    enable = true;
+    percentageLow = 19;
+    percentageCritical = 7;
+    percentageAction = 4;
+    criticalPowerAction = "Hibernate";
+  };
   services.gvfs.enable = true;
 
-  programs.firefox.enable = true;
+  programs.firefox = {
+    enable = true;
+    preferences = {
+      "media.ffmpeg.vaapi.enabled" = true;
+      "media.hardware-video-decoding.force-enabled" = true;
+      "media.av1.enabled" = true;
+      "gfx.webrender.all" = true;
+      "gfx.x11-egl.force-enabled" = false;
+    };
+  };
 
   programs.thunar = {
     enable = true;
