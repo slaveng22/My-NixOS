@@ -1,5 +1,8 @@
-{ pkgs, ... }:
+{ pkgs, self, ... }:
 
+let
+  flyline = pkgs.callPackage (self + /pkgs/flyline.nix) {};
+in
 {
   # fastfetch config
   xdg.configFile."fastfetch/config.jsonc".source = ../../dotfiles/fastfetch/config.jsonc;
@@ -42,23 +45,12 @@
     };
 
     initExtra = ''
+      enable -f ${flyline}/lib/libflyline.so flyline
+
       export PATH="$HOME/.local/bin:$PATH"
 
       # cd with ls
       cd() { builtin cd "$@" && ls --color=auto; }
-
-      # FZF history search → Ctrl+R
-      __fzf_history_search() {
-        local selected
-        selected=$(HISTTIMEFORMAT= history | tac | fzf --tac --no-sort --height=40% --reverse --exact --preview="echo {}")
-        if [ -n "$selected" ]; then
-          selected="''${selected#*[0-9]  }"
-          printf "%s" "$selected" | wl-copy
-          READLINE_LINE="$selected"
-          READLINE_POINT=''${#READLINE_LINE}
-        fi
-      }
-      bind -x '"\C-r": __fzf_history_search'
 
       # Yazi with cd-on-exit
       yazi_cd() {

@@ -29,7 +29,7 @@
           home-manager.useGlobalPkgs = true;
           home-manager.useUserPackages = true;
           home-manager.extraSpecialArgs = {
-            inherit unstable;
+            inherit self unstable;
           };
           home-manager.users.slaven = import ./modules/home/default.nix;
         }

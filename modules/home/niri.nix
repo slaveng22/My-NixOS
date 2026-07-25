@@ -215,6 +215,9 @@ in {
     spawn-at-startup "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1"
     spawn-at-startup "${pkgs.wl-clipboard}/bin/wl-paste" "--watch" "${pkgs.cliphist}/bin/cliphist" "store"
     spawn-at-startup "${pkgs.swaybg}/bin/swaybg" "-i" "${../../images/backgrounds/sesija-jezero.jpg}" "-m" "fill"
+    overview {
+      backdrop-color "#141810"
+    }
     window-rule {
       geometry-corner-radius 12
       clip-to-geometry true
