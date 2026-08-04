@@ -1,11 +1,19 @@
 { pkgs, unstable, ... }:
 
+let
+  gruvbox-gtk-theme-patched = pkgs.gruvbox-gtk-theme.overrideAttrs (old: {
+    postInstall = (old.postInstall or "") + ''
+      find $out/share/themes -name "gtk.css" -path "*/gtk-3.0/*" \
+        -exec sed -i '/border-spacing/d' {} +
+    '';
+  });
+in
 {
   gtk = {
     enable = true;
     theme = {
       name = "Gruvbox-Dark";
-      package = pkgs.gruvbox-gtk-theme;
+      package = gruvbox-gtk-theme-patched;
     };
     iconTheme = {
       name = "Gruvbox-Plus-Dark";
@@ -20,8 +28,9 @@
   programs.fuzzel = {
     enable = true;
     settings = {
+      main = { font = "JetBrainsMono Nerd Font:size=12"; };
       border = { width = 2; };
-      colors = { border = "00ff00ff"; selection = "00ff0040"; };
+      colors = { border = "a7c080ff"; selection = "a7c08040"; };
     };
   };
 

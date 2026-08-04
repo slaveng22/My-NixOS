@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ lib, pkgs, ... }:
 
 let
 nix-sysinfo = pkgs.writeShellScriptBin "nix-sysinfo" ''
@@ -55,6 +55,15 @@ nightlight-toggle = pkgs.writeShellScriptBin "nightlight-toggle" ''
   fi
   ${pkgs.procps}/bin/pkill -RTMIN+9 waybar
 '';
+
+mic-status = pkgs.writeShellScriptBin "mic-status" ''
+  mute=$(${pkgs.wireplumber}/bin/wpctl get-volume @DEFAULT_AUDIO_SOURCE@ | ${pkgs.gnugrep}/bin/grep -o '\[MUTED\]')
+  if [ -n "$mute" ]; then
+    echo '{"text":"󰍭","class":"muted","tooltip":"Mic muted"}'
+  else
+    echo '{"text":"󰍬","class":"active","tooltip":"Mic active"}'
+  fi
+'';
 in
 
 {
@@ -69,7 +78,7 @@ in
 
   programs.waybar = {
     enable = true;
-    systemd.enable = false;
+    systemd.enable = true;
 
     settings = [{
       layer = "top";
@@ -82,12 +91,12 @@ in
 
       modules-left = [ "custom/nix" "niri/workspaces" ];
       modules-center = [ "niri/window" ];
-      modules-right = [ "tray" "custom/nightlight" "bluetooth" "network" "pulseaudio" "battery" "custom/power" "clock" ];
+      modules-right = [ "tray" "custom/nightlight" "bluetooth" "network" "pulseaudio" "custom/mic" "battery" "custom/power" "clock" ];
 
       "custom/nix" = {
         exec = "${nix-sysinfo}/bin/nix-sysinfo";
         return-type = "json";
-        interval = 30;
+        interval = 60;
         format = "{}";
         on-click = "${pkgs.niri}/bin/niri msg action toggle-overview";
       };
@@ -103,7 +112,7 @@ in
         };
       };
 
-tray = {
+      tray = {
         spacing = 8;
       };
 
@@ -148,6 +157,14 @@ tray = {
         tooltip-format = "{volume}%\n{desc}";
         on-click = "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle";
         on-click-right = "${pkgs.alacritty}/bin/alacritty -T pulsemixer -e ${pkgs.pulsemixer}/bin/pulsemixer";
+      };
+
+      "custom/mic" = {
+        exec = "${mic-status}/bin/mic-status";
+        return-type = "json";
+        interval = 2;
+        signal = 10;
+        on-click = "${pkgs.wireplumber}/bin/wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle && ${pkgs.procps}/bin/pkill -RTMIN+10 waybar";
       };
 
       battery = {
@@ -232,7 +249,7 @@ tray = {
         border: 1px solid rgba(211, 198, 170, 0.3);
       }
 
-#window {
+      #window {
         color: #d3c6aa;
         padding: 0 12px;
       }
@@ -313,6 +330,20 @@ tray = {
         background: #3d484d;
       }
 
+      #custom-mic {
+        padding: 0 8px;
+        margin: 4px 4px;
+        font-size: 15px;
+      }
+
+      #custom-mic.active {
+        color: #e67e80;
+      }
+
+      #custom-mic.muted {
+        color: #7a8478;
+      }
+
       #custom-nightlight {
         padding: 0 8px;
         margin: 4px 4px;
@@ -327,6 +358,21 @@ tray = {
         color: #7a8478;
       }
     '';
+  };
+
+  systemd.user.targets.niri-session = {
+    Unit.Description = "Niri Compositor Session";
+  };
+
+  systemd.user.services.waybar = {
+    Unit = {
+      After = lib.mkForce [ "niri-session.target" ];
+      PartOf = lib.mkForce [ "niri-session.target" "tray.target" ];
+      StartLimitBurst = 5;
+      StartLimitIntervalSec = "120s";
+    };
+    Service.RestartSec = "5s";
+    Install.WantedBy = lib.mkForce [ "niri-session.target" "tray.target" ];
   };
 
   systemd.user.services.nightlight-cache = {
@@ -346,15 +392,93 @@ tray = {
     Install.WantedBy = [ "timers.target" ];
   };
 
+  systemd.user.services.mako = {
+    Unit = {
+      Description = "Mako notification daemon";
+      PartOf = [ "niri-session.target" ];
+      After = [ "niri-session.target" ];
+    };
+    Install.WantedBy = [ "niri-session.target" ];
+    Service = {
+      ExecStart = "${pkgs.mako}/bin/mako";
+      Restart = "on-failure";
+    };
+  };
+
   systemd.user.services.wlsunset = {
     Unit = {
       Description = "Night light";
-      PartOf = [ "graphical-session.target" ];
-      After = [ "graphical-session.target" ];
+      PartOf = [ "niri-session.target" ];
+      After = [ "niri-session.target" ];
     };
-    Install.WantedBy = [ "graphical-session.target" ];
+    Install.WantedBy = [ "niri-session.target" ];
     Service = {
       ExecStart = "${pkgs.wlsunset}/bin/wlsunset -l 44.8 -L 20.5";
+      Restart = "on-failure";
+    };
+  };
+
+  systemd.user.services.swayidle = {
+    Unit = {
+      Description = "Idle manager";
+      PartOf = [ "niri-session.target" ];
+      After = [ "niri-session.target" ];
+    };
+    Install.WantedBy = [ "niri-session.target" ];
+    Service = {
+      ExecStart = "${pkgs.swayidle}/bin/swayidle -w timeout 600 ${pkgs.gtklock}/bin/gtklock timeout 1200 'niri msg action power-off-monitors' timeout 1800 'systemctl suspend' before-sleep ${pkgs.gtklock}/bin/gtklock";
+      Restart = "on-failure";
+    };
+  };
+
+  systemd.user.services.polkit-gnome-agent = {
+    Unit = {
+      Description = "GNOME Polkit authentication agent";
+      PartOf = [ "niri-session.target" ];
+      After = [ "niri-session.target" ];
+    };
+    Install.WantedBy = [ "niri-session.target" ];
+    Service = {
+      ExecStart = "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1";
+      Restart = "on-failure";
+    };
+  };
+
+  systemd.user.services.cliphist = {
+    Unit = {
+      Description = "Clipboard history";
+      PartOf = [ "niri-session.target" ];
+      After = [ "niri-session.target" ];
+    };
+    Install.WantedBy = [ "niri-session.target" ];
+    Service = {
+      ExecStart = "${pkgs.wl-clipboard}/bin/wl-paste --watch ${pkgs.cliphist}/bin/cliphist store";
+      Restart = "on-failure";
+    };
+  };
+
+  systemd.user.services.swaybg = {
+    Unit = {
+      Description = "Wallpaper";
+      PartOf = [ "niri-session.target" ];
+      After = [ "niri-session.target" ];
+    };
+    Install.WantedBy = [ "niri-session.target" ];
+    Service = {
+      ExecStart = "${pkgs.swaybg}/bin/swaybg -i ${../../images/backgrounds/sesija-jezero.jpg} -m fill";
+      Restart = "on-failure";
+    };
+  };
+
+  systemd.user.services.gnome-keyring = {
+    Unit = {
+      Description = "GNOME Keyring daemon";
+      PartOf = [ "niri-session.target" ];
+      After = [ "niri-session.target" ];
+    };
+    Install.WantedBy = [ "niri-session.target" ];
+    Service = {
+      ExecStart = "${pkgs.gnome-keyring}/bin/gnome-keyring-daemon --foreground --components=secrets";
       Restart = "on-failure";
     };
   };

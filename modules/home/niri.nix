@@ -24,6 +24,7 @@ screenshot-area = pkgs.writeShellScriptBin "screenshot-area" ''
     else
       ${pkgs.libnotify}/bin/notify-send "Recording started"
       ${pkgs.wf-recorder}/bin/wf-recorder \
+        -c libx264 \
         -f "$HOME/Videos/Recordings/$(date +%Y-%m-%d_%H-%M-%S).mp4"
     fi
   '';
@@ -215,15 +216,8 @@ in {
 
     prefer-no-csd
 
-    spawn-at-startup "sh" "-c" "systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP DISPLAY && systemctl --user start graphical-session.target"
-    spawn-at-startup "sh" "-c" "while true; do ${pkgs.waybar}/bin/waybar; sleep 1; done"
-    spawn-at-startup "${pkgs.gnome-keyring}/bin/gnome-keyring-daemon" "--start" "--components=secrets"
-    spawn-at-startup "${pkgs.mako}/bin/mako"
+    spawn-at-startup "sh" "-c" "systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP DISPLAY && systemctl --user start niri-session.target"
     spawn-at-startup "${signal-desktop-wayland}/bin/signal-desktop" "--start-in-tray"
-    spawn-at-startup "${pkgs.swayidle}/bin/swayidle" "-w" "timeout" "600" "${pkgs.gtklock}/bin/gtklock" "timeout" "1200" "niri msg action power-off-monitors" "timeout" "1800" "systemctl suspend" "before-sleep" "${pkgs.gtklock}/bin/gtklock"
-    spawn-at-startup "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1"
-    spawn-at-startup "${pkgs.wl-clipboard}/bin/wl-paste" "--watch" "${pkgs.cliphist}/bin/cliphist" "store"
-    spawn-at-startup "${pkgs.swaybg}/bin/swaybg" "-i" "${../../images/backgrounds/sesija-jezero.jpg}" "-m" "fill"
     overview {
       backdrop-color "#141810"
     }
