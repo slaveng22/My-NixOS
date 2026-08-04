@@ -6,11 +6,11 @@
     ./shell.nix
     ./terminal.nix
     ./editor.nix
-    ./zellij.nix
     ./btop.nix
     ./niri.nix
     ./waybar.nix
     ./mako.nix
+    ./battery-notify.nix
   ];
 
   home.username = "slaven";

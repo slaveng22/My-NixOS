@@ -2,11 +2,6 @@
   "$schema": "https://github.com/fastfetch-cli/fastfetch/raw/dev/doc/json_schema.json",
   "modules": [
     {
-      "key": "╔══════════════════════════════════════════╗",
-      "type": "custom",
-      "keyColor": "white",
-    },
-    {
       "type": "title",
       "key": " ",
       "keyColor": "green",
@@ -39,12 +34,7 @@
       "key": " ",
       "keyColor": "green",
     },
-    {
-      "key": "╠══════════════════════════════════════════╣",
-      "type": "custom",
-      "keyColor": "white",
-    },
-    {
+{
       "type": "cpu",
       "key": "󰍛 ",
       "keyColor": "yellow",
@@ -62,12 +52,7 @@
       "keyColor": "yellow",
       "format": "{ipv4} ({ifname})",
     },
-    {
-      "key": "╠══════════════════════════════════════════╣",
-      "type": "custom",
-      "keyColor": "white",
-    },
-    {
+{
       "type": "memory",
       "key": " ",
       "keyColor": "cyan",
@@ -98,12 +83,7 @@
         "75": "red",
       },
     },
-    {
-      "key": "╠══════════════════════════════════════════╣",
-      "type": "custom",
-      "keyColor": "white",
-    },
-    {
+{
       "type": "battery",
       "key": "󱊥 ",
       "keyColor": "cyan",
@@ -118,15 +98,10 @@
       "key": "󰅐 ",
       "keyColor": "cyan",
     },
-    {
-      "key": "╚══════════════════════════════════════════╝",
-      "type": "custom",
-      "keyColor": "white",
-    },
   ],
   "logo": {
     "type": "auto",
-    "source": "nixos",
+    "source": "nixos_small",
     // "type": "file",
     // "source": "/home/slaven/.config/fastfetch/RPandaASCII.txt",
     "color": {

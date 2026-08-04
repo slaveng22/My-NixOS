@@ -55,9 +55,13 @@ in {
 
   xdg.portal = {
     enable = true;
-    extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
+    extraPortals = [ pkgs.xdg-desktop-portal-gtk pkgs.xdg-desktop-portal-gnome ];
     config = {
-      niri.default = [ "gtk" ];
+      niri = {
+        default = [ "gtk" ];
+        "org.freedesktop.impl.portal.ScreenCast" = [ "gnome" ];
+        "org.freedesktop.impl.portal.Screenshot" = [ "gnome" ];
+      };
       common.default = "gtk";
     };
   };
@@ -75,8 +79,7 @@ in {
     enable = true;
     percentageLow = 19;
     percentageCritical = 7;
-    percentageAction = 4;
-    criticalPowerAction = "Hibernate";
+    percentageAction = 2;
   };
   services.gvfs.enable = true;
 

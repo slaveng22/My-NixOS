@@ -16,19 +16,28 @@ nix-sysinfo = pkgs.writeShellScriptBin "nix-sysinfo" ''
 
 python-astral = pkgs.python3.withPackages (ps: [ ps.astral ]);
 
-nightlight-status = pkgs.writeShellScriptBin "nightlight-status" ''
-  if ${pkgs.procps}/bin/pgrep -x wlsunset > /dev/null; then
-    IS_NIGHT=$(${python-astral}/bin/python3 -c "
+nightlight-cache-update = pkgs.writeShellScriptBin "nightlight-cache-update" ''
+  mkdir -p "$HOME/.cache"
+  ${python-astral}/bin/python3 -c "
 from astral import LocationInfo
 from astral.sun import sun
 import datetime
 from zoneinfo import ZoneInfo
 city = LocationInfo('Belgrade', 'Serbia', 'Europe/Belgrade', 44.8167, 20.4667)
 s = sun(city.observer, date=datetime.date.today(), tzinfo=ZoneInfo('Europe/Belgrade'))
-now = datetime.datetime.now(ZoneInfo('Europe/Belgrade'))
-print('yes' if now < s['sunrise'] or now > s['sunset'] else 'no')
-")
-    if [ "$IS_NIGHT" = yes ]; then
+print(s['sunrise'].strftime('%H%M'))
+print(s['sunset'].strftime('%H%M'))
+" > "$HOME/.cache/nightlight-times"
+'';
+
+nightlight-status = pkgs.writeShellScriptBin "nightlight-status" ''
+  if ${pkgs.procps}/bin/pgrep -x wlsunset > /dev/null; then
+    CACHE="$HOME/.cache/nightlight-times"
+    [ -f "$CACHE" ] || ${nightlight-cache-update}/bin/nightlight-cache-update
+    SUNRISE=$(${pkgs.coreutils}/bin/head -1 "$CACHE")
+    SUNSET=$(${pkgs.coreutils}/bin/sed -n '2p' "$CACHE")
+    NOW=$(${pkgs.coreutils}/bin/date +%H%M)
+    if [ "$NOW" -lt "$SUNRISE" ] || [ "$NOW" -gt "$SUNSET" ]; then
       echo '{"text":"󰖔","class":"night","tooltip":"Night light on"}'
     else
       echo '{"text":"󰖙","class":"day","tooltip":"Night light on"}'
@@ -60,6 +69,7 @@ in
 
   programs.waybar = {
     enable = true;
+    systemd.enable = false;
 
     settings = [{
       layer = "top";
@@ -317,6 +327,23 @@ tray = {
         color: #7a8478;
       }
     '';
+  };
+
+  systemd.user.services.nightlight-cache = {
+    Unit.Description = "Update nightlight sunrise/sunset cache";
+    Service = {
+      Type = "oneshot";
+      ExecStart = "${nightlight-cache-update}/bin/nightlight-cache-update";
+    };
+  };
+
+  systemd.user.timers.nightlight-cache = {
+    Unit.Description = "Daily nightlight cache refresh";
+    Timer = {
+      OnCalendar = "daily";
+      Persistent = true;
+    };
+    Install.WantedBy = [ "timers.target" ];
   };
 
   systemd.user.services.wlsunset = {

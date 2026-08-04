@@ -23,8 +23,6 @@
   time.timeZone = "Europe/Belgrade";
   i18n.defaultLocale = "en_US.UTF-8";
 
-  powerManagement.cpuFreqGovernor = "schedutil";
-
   zramSwap = {
     enable = true;
     memoryPercent = 50;
@@ -34,6 +32,7 @@
     isNormalUser = true;
     description = "Slaven Gugolj";
     extraGroups = [ "networkmanager" "wheel" ];
+    shell = pkgs.fish;
   };
 
   hardware.graphics = {

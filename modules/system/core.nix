@@ -19,6 +19,7 @@
 
   # Allow running regular Linux libraries on NixOS
   programs.nix-ld.enable = true;
+  programs.fish.enable = true;
 
   programs.gnupg.agent = {
     enable = true;
@@ -52,12 +53,9 @@
   services.fwupd.enable = true;
   services.earlyoom.enable = true;
 
-  zramSwap.enable = true;
-
   boot.kernel.sysctl."vm.swappiness" = 10;
 
   environment.systemPackages = with pkgs; [
-    fzf
     ripgrep
     wl-clipboard
     bat

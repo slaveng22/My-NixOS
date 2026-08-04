@@ -1,6 +1,15 @@
-{ pkgs, ... }:
+{ pkgs, unstable, ... }:
 
 let
+signal-desktop-wayland = pkgs.symlinkJoin {
+  name = "signal-desktop";
+  paths = [ unstable.signal-desktop ];
+  nativeBuildInputs = [ pkgs.makeWrapper ];
+  postBuild = ''
+    wrapProgram $out/bin/signal-desktop \
+      --add-flags "--ozone-platform=wayland --enable-features=UseOzonePlatform,WaylandWindowDecorations"
+  '';
+};
 screenshot-area = pkgs.writeShellScriptBin "screenshot-area" ''
     ${pkgs.grim}/bin/grim -g "$(${pkgs.slurp}/bin/slurp)" - | ${pkgs.swappy}/bin/swappy -f -
   '';
@@ -19,7 +28,7 @@ screenshot-area = pkgs.writeShellScriptBin "screenshot-area" ''
     fi
   '';
 in {
-  home.packages = [ screenshot-area cliphist-pick wf-record-toggle ];
+  home.packages = [ screenshot-area cliphist-pick wf-record-toggle signal-desktop-wayland ];
 
   home.pointerCursor = {
     package = pkgs.bibata-cursors;
@@ -207,10 +216,10 @@ in {
     prefer-no-csd
 
     spawn-at-startup "sh" "-c" "systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP DISPLAY && systemctl --user start graphical-session.target"
+    spawn-at-startup "sh" "-c" "while true; do ${pkgs.waybar}/bin/waybar; sleep 1; done"
     spawn-at-startup "${pkgs.gnome-keyring}/bin/gnome-keyring-daemon" "--start" "--components=secrets"
     spawn-at-startup "${pkgs.mako}/bin/mako"
-    spawn-at-startup "${pkgs.waybar}/bin/waybar"
-    spawn-at-startup "sh" "-c" "signal-desktop --start-in-tray"
+    spawn-at-startup "${signal-desktop-wayland}/bin/signal-desktop" "--start-in-tray"
     spawn-at-startup "${pkgs.swayidle}/bin/swayidle" "-w" "timeout" "600" "${pkgs.gtklock}/bin/gtklock" "timeout" "1200" "niri msg action power-off-monitors" "timeout" "1800" "systemctl suspend" "before-sleep" "${pkgs.gtklock}/bin/gtklock"
     spawn-at-startup "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1"
     spawn-at-startup "${pkgs.wl-clipboard}/bin/wl-paste" "--watch" "${pkgs.cliphist}/bin/cliphist" "store"
@@ -221,6 +230,13 @@ in {
     window-rule {
       geometry-corner-radius 12
       clip-to-geometry true
+    }
+
+    window-rule {
+      match title="floating-term"
+      open-floating true
+      default-column-width { fixed 900; }
+      min-height 300
     }
 
     window-rule {
@@ -266,6 +282,7 @@ in {
     binds {
       // Apps
       Mod+Return { spawn "${pkgs.alacritty}/bin/alacritty"; }
+      Mod+T { spawn "${pkgs.alacritty}/bin/alacritty" "--title" "floating-term"; }
       Mod+Space { spawn "${pkgs.fuzzel}/bin/fuzzel"; }
       Mod+O { toggle-overview; }
       Mod+V { spawn "${cliphist-pick}/bin/cliphist-pick"; }
@@ -316,7 +333,8 @@ in {
       Mod+Equal { set-column-width "+10%"; }
       Mod+Shift+Minus { set-window-height "-10%"; }
       Mod+Shift+Equal { set-window-height "+10%"; }
-      Mod+F { maximize-column; }
+      Mod+M { maximize-column; }
+      Mod+F { toggle-window-floating; }
       Mod+Shift+F { fullscreen-window; }
       Mod+C { center-column; }
 

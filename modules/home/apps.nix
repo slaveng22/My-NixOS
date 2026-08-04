@@ -45,21 +45,10 @@
   home.packages = with pkgs; [
     libnotify
     unstable.obsidian
-    (pkgs.symlinkJoin {
-      name = "signal-desktop";
-      paths = [ unstable.signal-desktop ];
-      nativeBuildInputs = [ pkgs.makeWrapper ];
-      postBuild = ''
-        wrapProgram $out/bin/signal-desktop \
-          --add-flags "--ozone-platform=wayland --enable-features=UseOzonePlatform,WaylandWindowDecorations"
-      '';
-    })
-    oh-my-posh
     lazygit
     nodejs
     unzip
     yazi
-    pkgs.xfce.thunar
     claude-code
     bemoji
     imv
