@@ -68,7 +68,7 @@
     mpv
     rpi-imager
     gnome-keyring
-    rbw
+
     ncdu
     playerctl
   ];
