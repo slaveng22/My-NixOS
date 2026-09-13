@@ -68,7 +68,9 @@
     mpv
     rpi-imager
     gnome-keyring
-    unstable.signal-desktop
+    rbw
+    ncdu
+    playerctl
   ];
 
   environment.sessionVariables = {

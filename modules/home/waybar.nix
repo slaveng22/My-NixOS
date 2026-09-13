@@ -367,7 +367,10 @@ in
       StartLimitBurst = 5;
       StartLimitIntervalSec = "120s";
     };
-    Service.RestartSec = "5s";
+    Service = {
+      Restart = "on-failure";
+      RestartSec = "5s";
+    };
     Install.WantedBy = lib.mkForce [ "niri-session.target" "tray.target" ];
   };
 

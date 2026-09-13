@@ -18,15 +18,6 @@ in {
 
   hardware.bluetooth.enable = true;
 
-  hardware.opengl = {
-    enable = true;
-    extraPackages = with pkgs; [
-      intel-media-driver
-      libva-vdpau-driver
-      libvdpau-va-gl
-    ];
-  };
-
   systemd.tmpfiles.rules = [
     "d /var/lib/greeter 0700 greeter greeter -"
     "d /var/lib/greeter/.icons 0700 greeter greeter -"
@@ -88,7 +79,7 @@ in {
     enable = true;
     percentageLow = 19;
     percentageCritical = 7;
-    percentageAction = 2;
+    percentageAction = 5;
   };
   services.gvfs.enable = true;
 
@@ -97,9 +88,17 @@ in {
     preferences = {
       "media.ffmpeg.vaapi.enabled" = true;
       "media.hardware-video-decoding.force-enabled" = true;
+      "media.ffvpx.enabled" = false;
+      "media.navigator.mediadatadecoder-vpx-enabled" = true;
       "media.av1.enabled" = true;
       "gfx.webrender.all" = true;
+      "gfx.webrender.compositor.force-enabled" = true;
+      "layers.acceleration.force-enabled" = true;
       "gfx.x11-egl.force-enabled" = false;
+      "network.http.http3.enabled" = true;
+      "network.prefetch-next" = true;
+      "browser.cache.disk.enable" = false;
+      "browser.cache.memory.enable" = true;
     };
   };
 

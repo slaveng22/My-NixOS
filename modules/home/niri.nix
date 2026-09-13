@@ -7,6 +7,14 @@ screenshot-area = pkgs.writeShellScriptBin "screenshot-area" ''
   cliphist-pick = pkgs.writeShellScriptBin "cliphist-pick" ''
     ${pkgs.cliphist}/bin/cliphist list | ${pkgs.fuzzel}/bin/fuzzel --dmenu | ${pkgs.cliphist}/bin/cliphist decode | ${pkgs.wl-clipboard}/bin/wl-copy
   '';
+  bitwarden-pick = pkgs.writeShellScriptBin "bitwarden-pick" ''
+    item=$(${pkgs.rbw}/bin/rbw ls | ${pkgs.fuzzel}/bin/fuzzel --dmenu -p "Bitwarden: ")
+    [ -z "$item" ] && exit 0
+    password=$(${pkgs.rbw}/bin/rbw get "$item" 2>/dev/null)
+    [ -z "$password" ] && exit 0
+    printf '%s' "$password" | ${pkgs.wl-clipboard}/bin/wl-copy
+    ${pkgs.libnotify}/bin/notify-send "Bitwarden" "Password copied" -t 2000
+  '';
   wf-record-toggle = pkgs.writeShellScriptBin "wf-record-toggle" ''
     mkdir -p "$HOME/Videos/Recordings"
     if ${pkgs.procps}/bin/pgrep -x wf-recorder > /dev/null; then
@@ -410,7 +418,6 @@ in {
     };
   };
 
-  services.poweralertd.enable = true;
 
   home.file.".face".source = ../../images/profile/redpanda.png;
 
