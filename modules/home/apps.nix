@@ -53,7 +53,9 @@ in
 
   home.packages = with pkgs; [
     libnotify
-    unstable.obsidian
+    (unstable.obsidian.override {
+      commandLineArgs = "--enable-features=VaapiVideoDecodeLinuxGL,WaylandWindowDecorations --use-gl=desktop --ozone-platform=wayland";
+    })
     lazygit
     nodejs
     unzip

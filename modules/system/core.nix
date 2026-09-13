@@ -66,10 +66,7 @@
     python3
     neovide
     mpv
-    libreoffice-fresh
     rpi-imager
-    transmission_4-gtk
-    thunderbird
     gnome-keyring
     unstable.signal-desktop
   ];

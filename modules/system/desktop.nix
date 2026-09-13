@@ -17,7 +17,15 @@ in {
   programs.xwayland.enable = true;
 
   hardware.bluetooth.enable = true;
-  services.blueman.enable = true;
+
+  hardware.opengl = {
+    enable = true;
+    extraPackages = with pkgs; [
+      intel-media-driver
+      libva-vdpau-driver
+      libvdpau-va-gl
+    ];
+  };
 
   systemd.tmpfiles.rules = [
     "d /var/lib/greeter 0700 greeter greeter -"

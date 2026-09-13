@@ -265,7 +265,7 @@ in {
 
     binds {
       // Apps
-      Mod+Return { spawn "${pkgs.alacritty}/bin/alacritty" "-e" "tmux"; }
+      Mod+Return { spawn "${pkgs.alacritty}/bin/alacritty"; }
       Mod+T { spawn "${pkgs.alacritty}/bin/alacritty" "--title" "floating-term"; }
       Mod+Space { spawn "${pkgs.fuzzel}/bin/fuzzel"; }
       Mod+O { toggle-overview; }
