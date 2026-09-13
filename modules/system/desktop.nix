@@ -36,6 +36,7 @@ in {
   };
 
   security.pam.services.gtklock = { };
+  security.pam.services.greetd.enableGnomeKeyring = true;
   security.polkit.enable = true;
   security.polkit.extraConfig = ''
     polkit.addRule(function(action, subject) {

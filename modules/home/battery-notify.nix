@@ -72,13 +72,14 @@ in
   systemd.user.services.battery-notify = {
     Unit = {
       Description = "Battery level notification daemon";
-      After = [ "default.target" ];
+      After = [ "niri-session.target" ];
+      PartOf = [ "niri-session.target" ];
     };
     Service = {
       Type = "simple";
       ExecStart = "${batteryScript}";
       Restart = "on-failure";
     };
-    Install.WantedBy = [ "default.target" ];
+    Install.WantedBy = [ "niri-session.target" ];
   };
 }

@@ -133,7 +133,7 @@ in
         tooltip-format-disconnected = "Bluetooth on";
         tooltip-format-connected = "{device_alias}\n{device_battery_percentage}%";
         tooltip-format-enumerate-connected = "{device_alias}";
-        on-click = "${pkgs.bluez}/bin/bluetoothctl power $(${pkgs.bluez}/bin/bluetoothctl show | grep -q 'Powered: yes' && echo off || echo on)";
+        on-click = "${pkgs.bluez}/bin/bluetoothctl power $(${pkgs.bluez}/bin/bluetoothctl show | ${pkgs.gnugrep}/bin/grep -q 'Powered: yes' && echo off || echo on)";
         on-click-right = "${pkgs.alacritty}/bin/alacritty -T bluetuith -e ${pkgs.bluetuith}/bin/bluetuith";
       };
 
@@ -337,7 +337,7 @@ in
       }
 
       #custom-mic.active {
-        color: #e67e80;
+        color: #dbbc7f;
       }
 
       #custom-mic.muted {
@@ -358,10 +358,6 @@ in
         color: #7a8478;
       }
     '';
-  };
-
-  systemd.user.targets.niri-session = {
-    Unit.Description = "Niri Compositor Session";
   };
 
   systemd.user.services.waybar = {
@@ -392,94 +388,5 @@ in
     Install.WantedBy = [ "timers.target" ];
   };
 
-  systemd.user.services.mako = {
-    Unit = {
-      Description = "Mako notification daemon";
-      PartOf = [ "niri-session.target" ];
-      After = [ "niri-session.target" ];
-    };
-    Install.WantedBy = [ "niri-session.target" ];
-    Service = {
-      ExecStart = "${pkgs.mako}/bin/mako";
-      Restart = "on-failure";
-    };
-  };
 
-  systemd.user.services.wlsunset = {
-    Unit = {
-      Description = "Night light";
-      PartOf = [ "niri-session.target" ];
-      After = [ "niri-session.target" ];
-    };
-    Install.WantedBy = [ "niri-session.target" ];
-    Service = {
-      ExecStart = "${pkgs.wlsunset}/bin/wlsunset -l 44.8 -L 20.5";
-      Restart = "on-failure";
-    };
-  };
-
-  systemd.user.services.swayidle = {
-    Unit = {
-      Description = "Idle manager";
-      PartOf = [ "niri-session.target" ];
-      After = [ "niri-session.target" ];
-    };
-    Install.WantedBy = [ "niri-session.target" ];
-    Service = {
-      ExecStart = "${pkgs.swayidle}/bin/swayidle -w timeout 600 ${pkgs.gtklock}/bin/gtklock timeout 1200 'niri msg action power-off-monitors' timeout 1800 'systemctl suspend' before-sleep ${pkgs.gtklock}/bin/gtklock";
-      Restart = "on-failure";
-    };
-  };
-
-  systemd.user.services.polkit-gnome-agent = {
-    Unit = {
-      Description = "GNOME Polkit authentication agent";
-      PartOf = [ "niri-session.target" ];
-      After = [ "niri-session.target" ];
-    };
-    Install.WantedBy = [ "niri-session.target" ];
-    Service = {
-      ExecStart = "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1";
-      Restart = "on-failure";
-    };
-  };
-
-  systemd.user.services.cliphist = {
-    Unit = {
-      Description = "Clipboard history";
-      PartOf = [ "niri-session.target" ];
-      After = [ "niri-session.target" ];
-    };
-    Install.WantedBy = [ "niri-session.target" ];
-    Service = {
-      ExecStart = "${pkgs.wl-clipboard}/bin/wl-paste --watch ${pkgs.cliphist}/bin/cliphist store";
-      Restart = "on-failure";
-    };
-  };
-
-  systemd.user.services.swaybg = {
-    Unit = {
-      Description = "Wallpaper";
-      PartOf = [ "niri-session.target" ];
-      After = [ "niri-session.target" ];
-    };
-    Install.WantedBy = [ "niri-session.target" ];
-    Service = {
-      ExecStart = "${pkgs.swaybg}/bin/swaybg -i ${../../images/backgrounds/sesija-jezero.jpg} -m fill";
-      Restart = "on-failure";
-    };
-  };
-
-  systemd.user.services.gnome-keyring = {
-    Unit = {
-      Description = "GNOME Keyring daemon";
-      PartOf = [ "niri-session.target" ];
-      After = [ "niri-session.target" ];
-    };
-    Install.WantedBy = [ "niri-session.target" ];
-    Service = {
-      ExecStart = "${pkgs.gnome-keyring}/bin/gnome-keyring-daemon --foreground --components=secrets";
-      Restart = "on-failure";
-    };
-  };
 }

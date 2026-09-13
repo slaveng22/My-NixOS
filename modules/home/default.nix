@@ -1,4 +1,4 @@
-{ pkgs, unstable, ... }:
+{ pkgs, ... }:
 
 {
   imports = [
@@ -18,4 +18,6 @@
   home.stateVersion = "25.11";
 
   programs.home-manager.enable = true;
+
+  services.gnome-keyring.enable = true;
 }

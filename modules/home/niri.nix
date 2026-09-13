@@ -1,15 +1,6 @@
 { pkgs, unstable, ... }:
 
 let
-signal-desktop-wayland = pkgs.symlinkJoin {
-  name = "signal-desktop";
-  paths = [ unstable.signal-desktop ];
-  nativeBuildInputs = [ pkgs.makeWrapper ];
-  postBuild = ''
-    wrapProgram $out/bin/signal-desktop \
-      --add-flags "--ozone-platform=wayland --enable-features=UseOzonePlatform,WaylandWindowDecorations"
-  '';
-};
 screenshot-area = pkgs.writeShellScriptBin "screenshot-area" ''
     ${pkgs.grim}/bin/grim -g "$(${pkgs.slurp}/bin/slurp)" - | ${pkgs.swappy}/bin/swappy -f -
   '';
@@ -25,11 +16,11 @@ screenshot-area = pkgs.writeShellScriptBin "screenshot-area" ''
       ${pkgs.libnotify}/bin/notify-send "Recording started"
       ${pkgs.wf-recorder}/bin/wf-recorder \
         -c libx264 \
-        -f "$HOME/Videos/Recordings/$(date +%Y-%m-%d_%H-%M-%S).mp4"
+        -f "$HOME/Videos/Recordings/$(${pkgs.coreutils}/bin/date +%Y-%m-%d_%H-%M-%S).mp4"
     fi
   '';
 in {
-  home.packages = [ screenshot-area cliphist-pick wf-record-toggle signal-desktop-wayland ];
+  home.packages = [ screenshot-area cliphist-pick wf-record-toggle ];
 
   home.pointerCursor = {
     package = pkgs.bibata-cursors;
@@ -217,7 +208,6 @@ in {
     prefer-no-csd
 
     spawn-at-startup "sh" "-c" "systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP DISPLAY && systemctl --user start niri-session.target"
-    spawn-at-startup "${signal-desktop-wayland}/bin/signal-desktop" "--start-in-tray"
     overview {
       backdrop-color "#141810"
     }
@@ -275,7 +265,7 @@ in {
 
     binds {
       // Apps
-      Mod+Return { spawn "${pkgs.alacritty}/bin/alacritty"; }
+      Mod+Return { spawn "${pkgs.alacritty}/bin/alacritty" "-e" "tmux"; }
       Mod+T { spawn "${pkgs.alacritty}/bin/alacritty" "--title" "floating-term"; }
       Mod+Space { spawn "${pkgs.fuzzel}/bin/fuzzel"; }
       Mod+O { toggle-overview; }
@@ -350,6 +340,75 @@ in {
       Mod+Shift+P { power-off-monitors; }
     }
   '';
+
+  systemd.user.targets.niri-session = {
+    Unit.Description = "Niri Compositor Session";
+  };
+
+  systemd.user.services.wlsunset = {
+    Unit = {
+      Description = "Night light";
+      PartOf = [ "niri-session.target" ];
+      After = [ "niri-session.target" ];
+    };
+    Install.WantedBy = [ "niri-session.target" ];
+    Service = {
+      ExecStart = "${pkgs.wlsunset}/bin/wlsunset -l 44.8 -L 20.5";
+      Restart = "on-failure";
+    };
+  };
+
+  systemd.user.services.swayidle = {
+    Unit = {
+      Description = "Idle manager";
+      PartOf = [ "niri-session.target" ];
+      After = [ "niri-session.target" ];
+    };
+    Install.WantedBy = [ "niri-session.target" ];
+    Service = {
+      ExecStart = "${pkgs.swayidle}/bin/swayidle -w timeout 600 ${pkgs.gtklock}/bin/gtklock timeout 1200 '${pkgs.niri}/bin/niri msg action power-off-monitors' timeout 1800 'systemctl suspend' before-sleep ${pkgs.gtklock}/bin/gtklock";
+      Restart = "on-failure";
+    };
+  };
+
+  systemd.user.services.polkit-gnome-agent = {
+    Unit = {
+      Description = "GNOME Polkit authentication agent";
+      PartOf = [ "niri-session.target" ];
+      After = [ "niri-session.target" ];
+    };
+    Install.WantedBy = [ "niri-session.target" ];
+    Service = {
+      ExecStart = "${pkgs.polkit_gnome}/libexec/polkit-gnome-authentication-agent-1";
+      Restart = "on-failure";
+    };
+  };
+
+  systemd.user.services.cliphist = {
+    Unit = {
+      Description = "Clipboard history";
+      PartOf = [ "niri-session.target" ];
+      After = [ "niri-session.target" ];
+    };
+    Install.WantedBy = [ "niri-session.target" ];
+    Service = {
+      ExecStart = "${pkgs.wl-clipboard}/bin/wl-paste --watch ${pkgs.cliphist}/bin/cliphist store";
+      Restart = "on-failure";
+    };
+  };
+
+  systemd.user.services.swaybg = {
+    Unit = {
+      Description = "Wallpaper";
+      PartOf = [ "niri-session.target" ];
+      After = [ "niri-session.target" ];
+    };
+    Install.WantedBy = [ "niri-session.target" ];
+    Service = {
+      ExecStart = "${pkgs.swaybg}/bin/swaybg -i ${../../images/backgrounds/sesija-jezero.jpg} -m fill";
+      Restart = "on-failure";
+    };
+  };
 
   services.poweralertd.enable = true;
 

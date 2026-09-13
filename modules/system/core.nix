@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, unstable, ... }:
 
 {
   # Allow unfree packages
@@ -71,6 +71,7 @@
     transmission_4-gtk
     thunderbird
     gnome-keyring
+    unstable.signal-desktop
   ];
 
   environment.sessionVariables = {
