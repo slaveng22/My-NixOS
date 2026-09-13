@@ -20,7 +20,7 @@ screenshot-area = pkgs.writeShellScriptBin "screenshot-area" ''
     fi
   '';
 in {
-  home.packages = [ screenshot-area cliphist-pick wf-record-toggle ];
+  home.packages = [ screenshot-area cliphist-pick wf-record-toggle pkgs.hyprlock ];
 
   home.pointerCursor = {
     package = pkgs.bibata-cursors;
@@ -109,7 +109,7 @@ in {
   xdg.configFile."wlogout/layout".text = ''
     {
         "label" : "lock",
-        "action" : "${pkgs.gtklock}/bin/gtklock",
+        "action" : "${pkgs.hyprlock}/bin/hyprlock",
         "text" : "",
         "keybind" : "l"
     }
@@ -366,7 +366,7 @@ in {
     };
     Install.WantedBy = [ "niri-session.target" ];
     Service = {
-      ExecStart = "${pkgs.swayidle}/bin/swayidle -w timeout 600 ${pkgs.gtklock}/bin/gtklock timeout 1200 '${pkgs.niri}/bin/niri msg action power-off-monitors' timeout 1800 'systemctl suspend' before-sleep '${pkgs.procps}/bin/pgrep -x gtklock || ${pkgs.gtklock}/bin/gtklock'";
+      ExecStart = "${pkgs.swayidle}/bin/swayidle -w timeout 600 ${pkgs.hyprlock}/bin/hyprlock timeout 1200 '${pkgs.niri}/bin/niri msg action power-off-monitors' timeout 1800 'systemctl suspend' before-sleep '${pkgs.procps}/bin/pgrep -x hyprlock || ${pkgs.hyprlock}/bin/hyprlock'";
       Restart = "on-failure";
     };
   };
@@ -413,9 +413,67 @@ in {
 
   home.file.".face".source = ../../images/profile/redpanda.png;
 
-  xdg.configFile."gtklock/config.ini".text = ''
-    [main]
-    background=${../../images/backgrounds/nixos-corner.png}
-    modules=${pkgs.gtklock-userinfo-module}/lib/gtklock/userinfo-module.so;${pkgs.gtklock-powerbar-module}/lib/gtklock/powerbar-module.so
+  xdg.configFile."hypr/hyprlock.conf".text = ''
+    background {
+      monitor =
+      path = ${../../images/backgrounds/brutal.png}
+      blur_passes = 2
+      blur_size = 5
+      brightness = 0.5
+      noise = 0.01
+    }
+
+    label {
+      monitor =
+      text = cmd[update:1000] date +"%H"
+      color = rgba(d3c6aaee)
+      font_size = 160
+      font_family = JetBrainsMono Nerd Font
+      position = 0, 160
+      halign = center
+      valign = center
+    }
+
+    label {
+      monitor =
+      text = cmd[update:1000] date +"%M"
+      color = rgba(d3c6aaee)
+      font_size = 160
+      font_family = JetBrainsMono Nerd Font
+      position = 0, -20
+      halign = center
+      valign = center
+    }
+
+    label {
+      monitor =
+      text = cmd[update:60000] date +"%d %b, %a"
+      color = rgba(d3c6aa99)
+      font_size = 16
+      font_family = JetBrainsMono Nerd Font
+      position = 0, -180
+      halign = center
+      valign = center
+    }
+
+    input-field {
+      monitor =
+      size = 280, 45
+      outline_thickness = 1
+      dots_size = 0.25
+      dots_spacing = 0.3
+      dots_center = true
+      outer_color = rgba(d3c6aa33)
+      inner_color = rgba(2d353b88)
+      font_color = rgba(d3c6aacc)
+      font_family = JetBrainsMono Nerd Font
+      placeholder_text = Type the password...
+      position = 0, -280
+      halign = center
+      valign = center
+      check_color = rgba(a7c080ff)
+      fail_color = rgba(e67e80ff)
+      capslock_color = rgba(dbbc7fff)
+    }
   '';
 }
