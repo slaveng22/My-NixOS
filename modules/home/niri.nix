@@ -207,7 +207,7 @@ in {
 
     prefer-no-csd
 
-    spawn-at-startup "sh" "-c" "systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP DISPLAY && systemctl --user start niri-session.target"
+    spawn-at-startup "sh" "-c" "systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP DISPLAY NIRI_SOCKET && systemctl --user start niri-session.target"
     overview {
       backdrop-color "#141810"
     }
@@ -405,7 +405,7 @@ in {
     };
     Install.WantedBy = [ "niri-session.target" ];
     Service = {
-      ExecStart = "${pkgs.swaybg}/bin/swaybg -i ${../../images/backgrounds/sesija-jezero.jpg} -m fill";
+      ExecStart = "${pkgs.swaybg}/bin/swaybg -i ${../../images/backgrounds/everforest-cat.png} -m fill";
       Restart = "on-failure";
     };
   };
@@ -425,7 +425,7 @@ in {
 
     label {
       monitor =
-      text = cmd[update:1000] date +"%H"
+      text = cmd[update:1000] ${pkgs.coreutils}/bin/date +"%H"
       color = rgba(d3c6aaee)
       font_size = 160
       font_family = JetBrainsMono Nerd Font
@@ -436,7 +436,7 @@ in {
 
     label {
       monitor =
-      text = cmd[update:1000] date +"%M"
+      text = cmd[update:1000] ${pkgs.coreutils}/bin/date +"%M"
       color = rgba(d3c6aaee)
       font_size = 160
       font_family = JetBrainsMono Nerd Font
@@ -447,7 +447,7 @@ in {
 
     label {
       monitor =
-      text = cmd[update:60000] date +"%d %b, %a"
+      text = cmd[update:60000] ${pkgs.coreutils}/bin/date +"%d %b, %a"
       color = rgba(d3c6aa99)
       font_size = 16
       font_family = JetBrainsMono Nerd Font

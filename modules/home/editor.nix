@@ -63,11 +63,11 @@
       none-ls-nvim
       # Git
       lazygit-nvim
-      # Docker
-      lazydocker-nvim
       # Editing
       comment-nvim
       toggleterm-nvim
+      # Obsidian
+      obsidian-nvim
     ];
 
     extraLuaConfig = ''
@@ -142,7 +142,6 @@
           },
         })
       end, { desc = "Projects" })
-      map("n", "<leader>d",  function() require("lazydocker").open() end, { desc = "Open LazyDocker" })
       map("n", "<leader>nc", "<cmd>NoiceDismiss<cr>", { desc = "Clear notifications" })
       map("n", "<leader>nh", "<cmd>NoiceHistory<cr>", { desc = "Notification history" })
 
@@ -408,9 +407,6 @@
         git = { enable = true, ignore = false },
       })
 
-      -- ── LazyDocker ───────────────────────────────────────────────────────
-      require("lazydocker").setup({ floating_window = true })
-
       -- ── Cheatsheet ───────────────────────────────────────────────────────
       local cheatsheet = (function()
         local M = {}
@@ -535,6 +531,25 @@ All local plugins (LSP, formatting, etc.) work normally.]] },
         return M
       end)()
       map("n", "<leader>?", function() cheatsheet.open() end, { desc = "Cheatsheet" })
+
+      -- ── Obsidian ─────────────────────────────────────────────────────────
+      require("obsidian").setup({
+        workspaces = {
+          { name = "obsidian", path = "~/Documents/My-Code/Obsidian" },
+        },
+        completion = { nvim_cmp = true, min_chars = 2 },
+        mappings = {},
+        ui = { enable = false },
+        legacy_commands = false,
+      })
+      wk.add({ { "<leader>o", group = "Obsidian", icon = "󰠮" } })
+      map("n", "<leader>on", "<cmd>Obsidian new<cr>",          { desc = "New note" })
+      map("n", "<leader>oo", "<cmd>Obsidian open<cr>",         { desc = "Open in app" })
+      map("n", "<leader>of", "<cmd>Obsidian quick_switch<cr>", { desc = "Find note" })
+      map("n", "<leader>os", "<cmd>Obsidian search<cr>",       { desc = "Search notes" })
+      map("n", "<leader>ob", "<cmd>Obsidian backlinks<cr>",    { desc = "Backlinks" })
+      map("n", "<leader>ot", "<cmd>Obsidian tags<cr>",         { desc = "Tags" })
+      map("n", "<leader>od", "<cmd>Obsidian today<cr>",        { desc = "Daily note" })
 
       -- ── ToggleTerm ───────────────────────────────────────────────────────
       require("toggleterm").setup({
