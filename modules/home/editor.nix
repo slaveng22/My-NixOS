@@ -538,7 +538,6 @@ All local plugins (LSP, formatting, etc.) work normally.]] },
           { name = "obsidian", path = "~/Documents/My-Code/Obsidian" },
         },
         completion = { nvim_cmp = true, min_chars = 2 },
-        mappings = {},
         ui = { enable = false },
         legacy_commands = false,
       })
