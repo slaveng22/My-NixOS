@@ -145,7 +145,7 @@ in
         tooltip-format-wifi = "{essid}\n{ipaddr}\nSignal: {signalStrength}%";
         tooltip-format-ethernet = "{ifname}: {ipaddr}";
         tooltip-format-disconnected = "Disconnected";
-        on-click-right = "${pkgs.alacritty}/bin/alacritty -T nmtui -e nmtui";
+        on-click-right = "${pkgs.alacritty}/bin/alacritty -T nmtui -e ${pkgs.networkmanager}/bin/nmtui";
       };
 
       pulseaudio = {
@@ -155,7 +155,7 @@ in
           default = [ "󰕿" "󰖀" "󰕾" ];
         };
         tooltip-format = "{volume}%\n{desc}";
-        on-click = "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle";
+        on-click = "${pkgs.wireplumber}/bin/wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle";
         on-click-right = "${pkgs.alacritty}/bin/alacritty -T pulsemixer -e ${pkgs.pulsemixer}/bin/pulsemixer";
       };
 

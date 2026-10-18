@@ -11,6 +11,7 @@
     ./waybar.nix
     ./mako.nix
     ./battery-notify.nix
+    ./claude.nix
   ];
 
   home.username = "slaven";

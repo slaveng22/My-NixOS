@@ -60,7 +60,6 @@ in
     nodejs
     unzip
     yazi
-    claude-code
     bemoji
     imv
     zathura

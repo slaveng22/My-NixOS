@@ -8,9 +8,10 @@
       url = "github:nix-community/home-manager/release-25.11";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    claude-nix.url = "github:joegoldin/claude-nix";
   };
 
-  outputs = { self, nixpkgs, nixpkgs-unstable, home-manager, ... }:
+  outputs = { self, nixpkgs, nixpkgs-unstable, home-manager, claude-nix, ... }:
   let
     unstable = import nixpkgs-unstable {
       system = "x86_64-linux";
@@ -31,6 +32,7 @@
           home-manager.extraSpecialArgs = {
             inherit self unstable;
           };
+          home-manager.sharedModules = [ claude-nix.homeManagerModules.default ];
           home-manager.users.slaven = import ./modules/home/default.nix;
         }
       ];
